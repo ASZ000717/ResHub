@@ -6,7 +6,7 @@ from urllib.parse import quote
 
 # Resend Configuration
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "noreply@reshub.co.za")
+RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "noreply@campusstay.co.za")
 FROM_NAME = os.getenv("FROM_NAME", "ResHub TUT")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://reshub-1.onrender.com").rstrip('/')  # Remove trailing slash
 

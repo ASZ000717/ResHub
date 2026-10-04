@@ -22,6 +22,7 @@ app.add_middleware(
         "https://reshub.co.za",
         "https://www.reshub.co.za",
         "https://reshub-1.onrender.com",
+        "http://reshub-1.onrender.com"
     ],
     allow_credentials=True,               
     allow_methods=["*"],
@@ -95,7 +96,7 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 @app.get("/")
 def root():
     return {
-        "message": "CampusStay API is running 🚀",
+        "message": "ResHub API is running 🚀",
         "docs": "/docs",
         "version": "1.0.0",
         "status": "healthy"
@@ -129,6 +130,8 @@ def debug_cors():
             "http://campusstay.co.za",
             "http://localhost:5173",
             "http://localhost:3000",
+            "https://reshub-1.onrender.com",
+            "http://reshub-1.onrender.com"
         ],
         "backend_url": os.getenv("BACKEND_URL", "Not set"),
         "frontend_url": os.getenv("FRONTEND_URL", "Not set"),
