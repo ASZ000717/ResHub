@@ -146,23 +146,23 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
                 <Home className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-700 bg-clip-text text-transparent">
-                CampusStay
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
+                ResHub
               </span>
             </div>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-700 hover:text-orange-600 transition">Features</a>
-              <a href="#how-it-works" className="text-gray-700 hover:text-orange-600 transition">How It Works</a>
-              <a href="#contact" className="text-gray-700 hover:text-orange-600 transition">Contact</a>
-              <button onClick={() => setShowLogin(true)} className="text-orange-600 hover:text-orange-700 font-medium transition">
+              <a href="#features" className="text-gray-700 hover:text-blue-800 transition">Features</a>
+              <a href="#how-it-works" className="text-gray-700 hover:text-blue-800 transition">How It Works</a>
+              <a href="#contact" className="text-gray-700 hover:text-blue-800 transition">Contact</a>
+              <button onClick={() => setShowLogin(true)} className="text-blue-800 hover:text-blue-900 font-medium transition">
                 Log In
               </button>
-              <button onClick={() => setShowSignup(true)} className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition transform hover:scale-105">
+              <button onClick={() => setShowSignup(true)} className="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-2 rounded-lg hover:shadow-lg transition transform hover:scale-105">
                 Get Started
               </button>
             </div>
@@ -176,13 +176,13 @@ export default function LandingPage() {
           {/* Mobile Menu */}
           {mobileMenu && (
             <div className="md:hidden py-4 space-y-3">
-              <a href="#features" className="block text-gray-700 hover:text-orange-600">Features</a>
-              <a href="#how-it-works" className="block text-gray-700 hover:text-orange-600">How It Works</a>
-              <a href="#contact" className="block text-gray-700 hover:text-orange-600">Contact</a>
-              <button onClick={() => setShowLogin(true)} className="block w-full text-left text-orange-600 font-medium">
+              <a href="#features" className="block text-gray-700 hover:text-blue-800">Features</a>
+              <a href="#how-it-works" className="block text-gray-700 hover:text-blue-800">How It Works</a>
+              <a href="#contact" className="block text-gray-700 hover:text-blue-800">Contact</a>
+              <button onClick={() => setShowLogin(true)} className="block w-full text-left text-blue-800 font-medium">
                 Log In
               </button>
-              <button onClick={() => setShowSignup(true)} className="block w-full bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-lg">
+              <button onClick={() => setShowSignup(true)} className="block w-full bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-2 rounded-lg">
                 Get Started
               </button>
             </div>
@@ -191,16 +191,16 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <section className="pt-32 pb-20 px-4 bg-gradient-to-br from-blue-50 via-white to-red-50">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <div className="inline-block bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm font-medium">
+              <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
                 For TUT Students
               </div>
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Find Your Perfect
-                <span className="block bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-blue-900 to-red-600 bg-clip-text text-transparent">
                   Student Home
                 </span>
               </h1>
@@ -210,41 +210,41 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => setShowSignup(true)}
-                  className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center justify-center"
+                  className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center justify-center"
                 >
                   Start Searching
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </button>
-                <button className="border-2 border-orange-600 text-orange-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-orange-50 transition">
+                <button className="border-2 border-blue-800 text-blue-800 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-50 transition">
                   Learn More
                 </button>
               </div>
               <div className="flex items-center space-x-8 pt-4">
                 <div>
-                  <div className="text-3xl font-bold text-gray-900">500+</div>
+                  <div className="text-3xl font-bold text-blue-900">500+</div>
                   <div className="text-gray-600">Listings</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-gray-900">2,000+</div>
+                  <div className="text-3xl font-bold text-blue-900">2,000+</div>
                   <div className="text-gray-600">Happy Students</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-gray-900">98%</div>
+                  <div className="text-3xl font-bold text-blue-900">98%</div>
                   <div className="text-gray-600">Satisfaction</div>
                 </div>
               </div>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-orange-400 to-red-600 rounded-3xl p-8 shadow-2xl transform rotate-3 hover:rotate-0 transition duration-500">
+              <div className="bg-gradient-to-br from-blue-800 to-red-600 rounded-3xl p-8 shadow-2xl transform rotate-3 hover:rotate-0 transition duration-500">
                 <div className="bg-white rounded-2xl p-6 transform -rotate-3 hover:rotate-0 transition duration-500">
                   <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl mb-4 flex items-center justify-center">
-                    <Home className="w-20 h-20 text-orange-500" />
+                    <Home className="w-20 h-20 text-blue-800" />
                   </div>
                   <div className="space-y-3">
                     <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                     <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                     <div className="flex justify-between items-center pt-2">
-                      <div className="h-8 bg-orange-500 rounded w-24"></div>
+                      <div className="h-8 bg-red-600 rounded w-24"></div>
                       <div className="h-8 bg-gray-200 rounded-full w-8"></div>
                     </div>
                   </div>
@@ -259,26 +259,26 @@ export default function LandingPage() {
       <section id="features" className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose CampusStay?</h2>
+            <h2 className="text-4xl font-bold text-blue-900 mb-4">Why Choose ResHub?</h2>
             <p className="text-xl text-gray-600">Everything you need to find your ideal student accommodation</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100 hover:shadow-xl transition transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-6">
+            <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100 hover:shadow-xl transition transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6">
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Verified Listings</h3>
               <p className="text-gray-600">All properties are verified and inspected to ensure safety and quality for TUT students.</p>
             </div>
             <div className="bg-gradient-to-br from-red-50 to-white p-8 rounded-2xl border border-red-100 hover:shadow-xl transition transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center mb-6">
                 <MapPin className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Near Campus</h3>
               <p className="text-gray-600">Find accommodation within walking distance or near convenient transport routes to TUT.</p>
             </div>
-            <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100 hover:shadow-xl transition transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-6">
+            <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100 hover:shadow-xl transition transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center mb-6">
                 <Clock className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Quick Booking</h3>
@@ -289,25 +289,25 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-orange-50">
+      <section id="how-it-works" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <h2 className="text-4xl font-bold text-blue-900 mb-4">How It Works</h2>
             <p className="text-xl text-gray-600">Three simple steps to your new home</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl font-bold">1</div>
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl font-bold">1</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Sign Up</h3>
               <p className="text-gray-600">Create your free account with your TUT student email in seconds.</p>
             </div>
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl font-bold">2</div>
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl font-bold">2</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Browse & Search</h3>
               <p className="text-gray-600">Filter by price, location, amenities, and find your perfect match.</p>
             </div>
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl font-bold">3</div>
+              <div className="w-20 h-20 bg-gradient-to-br from-red-600 to-red-700 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl font-bold">3</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Book & Move In</h3>
               <p className="text-gray-600">Apply online, get approved, and move into your new student home.</p>
             </div>
@@ -316,63 +316,63 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-orange-500 to-red-600">
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-900 to-blue-700">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Find Your Home?</h2>
-          <p className="text-xl text-orange-100 mb-8">Join thousands of TUT students who found their perfect accommodation through CampusStay</p>
-          <button onClick={() => setShowSignup(true)} className="bg-white text-orange-600 px-10 py-4 rounded-lg text-lg font-semibold hover:shadow-2xl transition transform hover:scale-105">
+          <p className="text-xl text-blue-100 mb-8">Join thousands of TUT students who found their perfect accommodation through ResHub</p>
+          <button onClick={() => setShowSignup(true)} className="bg-red-600 text-white px-10 py-4 rounded-lg text-lg font-semibold hover:bg-red-700 hover:shadow-2xl transition transform hover:scale-105">
             Get Started for Free
           </button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="bg-gray-900 text-white py-12 px-4">
+      <footer id="contact" className="bg-[#0a1f44] text-white py-12 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-500 rounded-lg flex items-center justify-center">
               <Home className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold">CampusStay</span>
+            <span className="text-2xl font-bold">ResHub</span>
           </div>
-          <p className="text-gray-400 mb-6">Student accommodation made simple for TUT students</p>
+          <p className="text-blue-200 mb-6">Student accommodation made simple for TUT students</p>
           
           {/* Contact Information */}
           <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-6">
-            <div className="text-gray-300">
+            <div className="text-blue-100">
               <div className="flex items-center justify-center space-x-2 mb-2">
-                <Mail className="w-5 h-5 text-orange-500" />
+                <Mail className="w-5 h-5 text-red-500" />
                 <span className="font-semibold">Email Us</span>
               </div>
               <div className="space-y-1 text-sm">
                 <p>
-                  <a href="mailto:info@campusstay.co.za" className="hover:text-orange-500 transition">
-                    info@campusstay.co.za
+                  <a href="mailto:info@reshub.co.za" className="hover:text-red-400 transition">
+                    info@reshub.co.za
                   </a>
                 </p>
                 <p>
-                  <a href="mailto:molakengcalvin@gmail.com" className="hover:text-orange-500 transition">
-                    molakengcalvin@gmail.com
+                  <a href="mailto:andilesiyanda.zungu@gmail.com" className="hover:text-red-400 transition">
+                    andilesiyanda.zungu@gmail.com
                   </a>
                 </p>
               </div>
             </div>
-            <div className="text-gray-300">
+            <div className="text-blue-100">
               <div className="flex items-center justify-center space-x-2 mb-2">
-                <Users className="w-5 h-5 text-orange-500" />
+                <Users className="w-5 h-5 text-red-500" />
                 <span className="font-semibold">Call Us</span>
               </div>
               <div className="text-sm">
                 <p>
-                  <a href="tel:+27710506325" className="hover:text-orange-500 transition">
-                    +27 71 050 6325
+                  <a href="tel:+27604713580" className="hover:text-red-400 transition">
+                    +27 60 471 3580
                   </a>
                 </p>
               </div>
             </div>
           </div>
           
-          <p className="text-gray-500 text-sm">© 2025 CampusStay. All rights reserved.</p>
+          <p className="text-blue-300 text-sm">© 2025 ResHub. All rights reserved.</p>
         </div>
       </footer>
 
@@ -388,8 +388,8 @@ export default function LandingPage() {
             </button>
 
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-              <p className="text-gray-600">Log in to your CampusStay account</p>
+              <h2 className="text-3xl font-bold text-blue-900 mb-2">Welcome Back</h2>
+              <p className="text-gray-600">Log in to your ResHub account</p>
             </div>
 
             <div className="space-y-4">
@@ -403,7 +403,7 @@ export default function LandingPage() {
                   onChange={(e) =>
                     setLoginData({ ...loginData, email: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                   placeholder="your.email@gmail.com"
                   required
                   disabled={loginLoading}
@@ -420,7 +420,7 @@ export default function LandingPage() {
                   onChange={(e) =>
                     setLoginData({ ...loginData, password: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                   placeholder="Enter your password"
                   required
                   disabled={loginLoading}
@@ -433,7 +433,7 @@ export default function LandingPage() {
 
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center">
-                  <input type="checkbox" className="mr-2" disabled={loginLoading} />
+                  <input type="checkbox" className="mr-2 accent-blue-800" disabled={loginLoading} />
                   <span className="text-gray-600">Remember me</span>
                 </label>
                 <button 
@@ -441,7 +441,7 @@ export default function LandingPage() {
                     setShowLogin(false);
                     setShowForgotPassword(true);
                   }}
-                  className="text-orange-600 hover:text-orange-700"
+                  className="text-blue-800 hover:text-blue-900"
                 >
                   Forgot password?
                 </button>
@@ -450,7 +450,7 @@ export default function LandingPage() {
               <button
                 onClick={handleLogin}
                 disabled={loginLoading}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-gradient-to-r from-blue-900 to-blue-700 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loginLoading ? (
                   <>
@@ -473,7 +473,7 @@ export default function LandingPage() {
                   setShowLogin(false);
                   setShowSignup(true);
                 }}
-                className="text-orange-600 hover:text-orange-700 font-semibold"
+                className="text-red-600 hover:text-red-700 font-semibold"
                 disabled={loginLoading}
               >
                 Sign up
@@ -495,10 +495,10 @@ export default function LandingPage() {
             </button>
 
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h2>
+              <h2 className="text-3xl font-bold text-blue-900 mb-2">Forgot Password?</h2>
               <p className="text-gray-600">Enter your email and we'll send you a reset link</p>
             </div>
 
@@ -511,7 +511,7 @@ export default function LandingPage() {
                   type="email"
                   value={forgotPasswordEmail}
                   onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                   placeholder="your.email@gmail.com"
                   required
                   disabled={forgotPasswordLoading}
@@ -521,7 +521,7 @@ export default function LandingPage() {
               <button
                 type="submit"
                 disabled={forgotPasswordLoading}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-gradient-to-r from-blue-900 to-blue-700 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {forgotPasswordLoading ? (
                   <>
@@ -544,7 +544,7 @@ export default function LandingPage() {
                   setShowForgotPassword(false);
                   setShowLogin(true);
                 }}
-                className="text-orange-600 hover:text-orange-700 font-semibold"
+                className="text-red-600 hover:text-red-700 font-semibold"
                 disabled={forgotPasswordLoading}
               >
                 Log in
@@ -570,7 +570,7 @@ export default function LandingPage() {
             </button>
 
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Join CampusStay</h2>
+              <h2 className="text-3xl font-bold text-blue-900 mb-2">Join ResHub</h2>
               <p className="text-gray-600">Create your account to get started</p>
             </div>
 
@@ -581,16 +581,16 @@ export default function LandingPage() {
                 <div className="grid grid-cols-1 gap-4">
                   <button
                     onClick={() => setSignupRole('student')}
-                    className="p-6 border-2 border-orange-200 rounded-xl hover:border-orange-500 hover:bg-orange-50 transition flex items-center justify-center space-x-3"
+                    className="p-6 border-2 border-blue-200 rounded-xl hover:border-blue-700 hover:bg-blue-50 transition flex items-center justify-center space-x-3"
                   >
-                    <Users className="w-6 h-6 text-orange-600" />
+                    <Users className="w-6 h-6 text-blue-800" />
                     <span className="font-medium">I'm a Student</span>
                   </button>
                   <button
                     onClick={() => setSignupRole('admin')}
-                    className="p-6 border-2 border-gray-200 rounded-xl hover:border-gray-400 hover:bg-gray-50 transition flex items-center justify-center space-x-3"
+                    className="p-6 border-2 border-red-200 rounded-xl hover:border-red-500 hover:bg-red-50 transition flex items-center justify-center space-x-3"
                   >
-                    <Shield className="w-6 h-6 text-gray-600" />
+                    <Shield className="w-6 h-6 text-red-600" />
                     <span className="font-medium">I'm an Admin / Manager</span>
                   </button>
                 </div>
@@ -604,7 +604,7 @@ export default function LandingPage() {
                     type="text"
                     value={studentData.full_name}
                     onChange={(e) => setStudentData({ ...studentData, full_name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                     placeholder="John Doe"
                     required
                     disabled={signupLoading}
@@ -617,7 +617,7 @@ export default function LandingPage() {
                     type="email"
                     value={studentData.email}
                     onChange={(e) => setStudentData({ ...studentData, email: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                     placeholder="your.email@gmail.com"
                     required
                     disabled={signupLoading}
@@ -633,7 +633,7 @@ export default function LandingPage() {
                       const value = e.target.value.replace(/\D/g, '').slice(0, 9);
                       setStudentData({ ...studentData, student_number: value });
                     }}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                     placeholder="123456789"
                     maxLength={9}
                     required
@@ -649,7 +649,7 @@ export default function LandingPage() {
                   <select
                     value={studentData.campus}
                     onChange={(e) => setStudentData({ ...studentData, campus: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                     required
                     disabled={signupLoading}
                   >
@@ -668,7 +668,7 @@ export default function LandingPage() {
                     type="tel"
                     value={studentData.phone_number}
                     onChange={(e) => setStudentData({ ...studentData, phone_number: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                     placeholder="+27 12 345 6789"
                     required
                     disabled={signupLoading}
@@ -681,7 +681,7 @@ export default function LandingPage() {
                     type="password"
                     value={studentData.password}
                     onChange={(e) => setStudentData({ ...studentData, password: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                     placeholder="Create a strong password"
                     required
                     disabled={signupLoading}
@@ -689,14 +689,14 @@ export default function LandingPage() {
                 </div>
 
                 <div className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-2" required disabled={signupLoading} />
+                  <input type="checkbox" className="mt-1 mr-2 accent-blue-800" required disabled={signupLoading} />
                   <span className="text-sm text-gray-600">I agree to the Terms of Service and Privacy Policy</span>
                 </div>
 
                 <button
                   onClick={handleStudentSignup}
                   disabled={signupLoading}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-blue-900 to-blue-700 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   {signupLoading ? (
                     <>
@@ -714,7 +714,7 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => setSignupRole(null)}
-                  className="w-full text-sm text-gray-600 hover:text-gray-800"
+                  className="w-full text-sm text-gray-600 hover:text-blue-800"
                   disabled={signupLoading}
                 >
                   Back
@@ -723,14 +723,14 @@ export default function LandingPage() {
             ) : (
               /* Admin Signup (Invite Only) */
               <div className="text-center py-8">
-                <Shield className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <Shield className="w-16 h-16 text-blue-300 mx-auto mb-4" />
                 <p className="text-gray-600">Admin registration is by invite only.</p>
                 <button
                   onClick={() => {
                     setSignupRole(null);
                     setShowSignup(false);
                   }}
-                  className="mt-4 text-orange-600 hover:text-orange-700 font-medium"
+                  className="mt-4 text-blue-800 hover:text-blue-900 font-medium"
                 >
                   Back to Login
                 </button>

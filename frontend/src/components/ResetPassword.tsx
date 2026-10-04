@@ -109,7 +109,7 @@ export default function ResetPassword() {
               <Home className="w-7 h-7 text-white" />
             </div>
             <span className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-700 bg-clip-text text-transparent">
-              CampusStay
+              ResHub
             </span>
           </div>
         </div>
@@ -230,7 +230,7 @@ export default function ResetPassword() {
 
         {/* Footer */}
         <p className="text-center text-gray-500 text-sm mt-8">
-          © 2025 CampusStay - Tshwane University of Technology
+          © 2025 ResHub - Tshwane University of Technology
         </p>
       </div>
     </div>
