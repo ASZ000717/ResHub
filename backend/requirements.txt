@@ -1,0 +1,33 @@
+# Core
+fastapi==0.115.4
+uvicorn[standard]==0.32.0
+gunicorn==23.0.0                  # Render strongly recommends this for production
+
+# Database
+SQLAlchemy==2.0.36
+alembic==1.13.3
+psycopg[binary]==3.2.3
+psycopg2            # psycopg3 with binary (no psycopg2 conflicts, works great on Render)
+greenlet==3.1.1
+
+# Auth / security
+bcrypt==4.0.1
+passlib==1.7.4
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.12
+
+# Pydantic – versions with cp313 wheels already published
+pydantic==2.9.2
+pydantic-core==2.23.4
+
+# Other utilities from your original list
+python-dotenv==1.0.1
+boto3==1.35.24
+PyYAML==6.0.2
+email-validator==2.2.0
+
+# Optional but useful on Render
+watchfiles==0.24.0
+httptools==0.6.4
+
+resend
