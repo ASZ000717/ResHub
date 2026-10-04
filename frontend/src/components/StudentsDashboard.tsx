@@ -124,7 +124,7 @@ export default function StudentsDashboard() {
     confirm_password: '',
   });
 
-  const API = 'https://campusstay-backend.onrender.com/students';
+  const API = 'https://reshub-n9hq.onrender.com/students';
 
   const showNotification = (type: 'success' | 'error' | 'warning' | 'info', message: string) => {
     const id = Date.now();
