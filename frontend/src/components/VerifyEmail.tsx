@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { CheckCircle, XCircle, Loader2, Home, LogIn } from 'lucide-react';
 
-const API_BASE = 'https://campusstay-backend.onrender.com';
+const API_BASE = 'https://reshub-n9hq.onrender.com';
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();

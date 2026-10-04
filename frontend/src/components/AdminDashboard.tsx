@@ -132,7 +132,7 @@ export default function AdminDashboard() {
     removedImages: [] as string[],
   });
 
-  const API = 'https://campusstay-backend.onrender.com/admin';
+  const API = 'https://reshub-n9hq.onrender.com/admin';
 
   const showNotification = (type: 'success' | 'error' | 'warning' | 'info', message: string) => {
     const id = Date.now();

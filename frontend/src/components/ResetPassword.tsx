@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Home, Lock, CheckCircle, AlertCircle, LogIn, Loader2 } from 'lucide-react';
 
-const API_BASE = 'https://campusstay-backend.onrender.com';
+const API_BASE = 'https://reshub-n9hq.onrender';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
