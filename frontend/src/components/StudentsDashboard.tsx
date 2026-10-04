@@ -242,7 +242,7 @@ export default function StudentsDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-800 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -253,12 +253,12 @@ export default function StudentsDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
-          <User className="w-16 h-16 text-orange-600 mx-auto mb-4" />
+          <User className="w-16 h-16 text-blue-800 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Access Restricted</h2>
           <p className="text-gray-600 mb-6">This page is for students only.</p>
           <a
             href="/"
-            className="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition"
+            className="inline-flex items-center gap-2 bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition"
           >
             <Home className="w-5 h-5" /> Back to Home
           </a>
@@ -495,11 +495,11 @@ export default function StudentsDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
                 <Home className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">ResHub</h1>
+                <h1 className="text-xl font-bold text-blue-900">ResHub</h1>
                 <p className="text-sm text-gray-600">Student Portal</p>
               </div>
             </div>
@@ -512,7 +512,7 @@ export default function StudentsDashboard() {
                   onClick={() => setActiveTab(tab as any)}
                   className={`px-4 py-2 rounded-lg font-medium text-sm transition capitalize ${
                     activeTab === tab
-                      ? 'bg-orange-600 text-white shadow-sm'
+                      ? 'bg-blue-800 text-white shadow-sm'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -552,7 +552,7 @@ export default function StudentsDashboard() {
                   }}
                   className={`block w-full text-left px-4 py-2 rounded-lg font-medium transition capitalize ${
                     activeTab === tab
-                      ? 'bg-orange-600 text-white'
+                      ? 'bg-blue-800 text-white'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
@@ -585,12 +585,12 @@ export default function StudentsDashboard() {
                     placeholder="Search by title or location..."
                     value={filters.searchQuery}
                     onChange={(e) => setFilters({ ...filters, searchQuery: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                   />
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center justify-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition font-medium"
+                  className="flex items-center justify-center gap-2 bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-900 transition font-medium"
                 >
                   <Filter className="w-5 h-5" />
                   <span>Filters</span>
@@ -598,7 +598,7 @@ export default function StudentsDashboard() {
                     filters.campusIntake.length > 0 ||
                     filters.minSpace ||
                     filters.maxSpace) && (
-                    <span className="ml-1 bg-white text-orange-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="ml-1 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       !
                     </span>
                   )}
@@ -618,7 +618,7 @@ export default function StudentsDashboard() {
                       onChange={(e) =>
                         setFilters({ ...filters, propertyType: e.target.value as any })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                     >
                       <option value="all">All Types</option>
                       <option value="bachelor">Bachelor Flat</option>
@@ -638,7 +638,7 @@ export default function StudentsDashboard() {
                           onClick={() => toggleCampusFilter(campus)}
                           className={`p-3 border-2 rounded-lg cursor-pointer transition ${
                             filters.campusIntake.includes(campus)
-                              ? 'border-orange-500 bg-orange-50 text-orange-700'
+                              ? 'border-blue-700 bg-blue-50 text-blue-800'
                               : 'border-gray-300 hover:border-gray-400 text-gray-700'
                           }`}
                         >
@@ -646,7 +646,7 @@ export default function StudentsDashboard() {
                             <div
                               className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
                                 filters.campusIntake.includes(campus)
-                                  ? 'border-orange-500 bg-orange-500'
+                                  ? 'border-blue-700 bg-blue-700'
                                   : 'border-gray-400'
                               }`}
                             >
@@ -672,7 +672,7 @@ export default function StudentsDashboard() {
                         placeholder="e.g. 1"
                         value={filters.minSpace}
                         onChange={(e) => setFilters({ ...filters, minSpace: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                         min="1"
                       />
                     </div>
@@ -685,7 +685,7 @@ export default function StudentsDashboard() {
                         placeholder="e.g. 4"
                         value={filters.maxSpace}
                         onChange={(e) => setFilters({ ...filters, maxSpace: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                         min="1"
                       />
                     </div>
@@ -700,7 +700,7 @@ export default function StudentsDashboard() {
                       onChange={(e) =>
                         setFilters({ ...filters, availableOnly: e.target.checked })
                       }
-                      className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
+                      className="w-5 h-5 text-blue-800 rounded focus:ring-blue-700"
                     />
                     <label htmlFor="availableOnly" className="text-sm font-medium text-gray-700">
                       Show only available properties
@@ -729,14 +729,14 @@ export default function StudentsDashboard() {
 
             {/* Properties Grid */}
             <div className="mb-4 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-blue-900">
                 {filteredProperties.length} Properties Available
               </h2>
             </div>
 
             {loading ? (
               <div className="text-center py-20 text-gray-600">
-                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
+                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
                 Loading properties...
               </div>
             ) : filteredProperties.length === 0 ? (
@@ -778,7 +778,7 @@ export default function StudentsDashboard() {
                             className="w-full h-48 object-cover"
                             onError={(e) => {
                               e.currentTarget.src =
-                                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f97316" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
+                                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%231e3a8a" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
                             }}
                           />
                           {property.available_flats === 0 && (
@@ -788,7 +788,7 @@ export default function StudentsDashboard() {
                           )}
                         </div>
                       ) : (
-                        <div className="bg-gradient-to-br from-orange-500 to-red-600 h-48 flex items-center justify-center">
+                        <div className="bg-gradient-to-br from-blue-800 to-red-600 h-48 flex items-center justify-center">
                           <Home className="w-16 h-16 text-white opacity-50" />
                         </div>
                       )}
@@ -810,7 +810,7 @@ export default function StudentsDashboard() {
                         </div>
 
                         <div className="flex items-center text-gray-600 text-sm mb-3">
-                          <MapPin className="w-4 h-4 mr-2 text-orange-600" />
+                          <MapPin className="w-4 h-4 mr-2 text-red-600" />
                           <span className="line-clamp-1">{property.address}</span>
                         </div>
 
@@ -821,7 +821,7 @@ export default function StudentsDashboard() {
                         <div className="bg-gray-50 rounded-lg p-3 mb-3">
                           <div className="flex justify-between text-sm font-semibold mb-2">
                             <span className="text-gray-600">Available</span>
-                            <span className="text-orange-600">
+                            <span className="text-blue-800">
                               {property.available_flats} / {property.total_flats}
                             </span>
                           </div>
@@ -840,7 +840,7 @@ export default function StudentsDashboard() {
                         </div>
 
                         <div className="flex items-center text-sm text-gray-600">
-                          <Users className="w-4 h-4 mr-2 text-orange-600" />
+                          <Users className="w-4 h-4 mr-2 text-blue-800" />
                           <span>
                             {property.space_per_student}{' '}
                             {property.is_bachelor ? 'students per unit' : 'students per room'}
@@ -858,7 +858,7 @@ export default function StudentsDashboard() {
         {/* FAVORITES TAB */}
         {activeTab === 'favorites' && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Favorite Properties</h2>
+            <h2 className="text-2xl font-bold text-blue-900 mb-6">My Favorite Properties</h2>
             {favorites.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm p-12 text-center">
                 <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -866,7 +866,7 @@ export default function StudentsDashboard() {
                 <p className="text-gray-600 mb-6">Start exploring and save properties you like!</p>
                 <button
                   onClick={() => setActiveTab('browse')}
-                  className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition font-medium"
+                  className="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-900 transition font-medium"
                 >
                   Browse Properties
                 </button>
@@ -898,11 +898,11 @@ export default function StudentsDashboard() {
                           className="w-full h-48 object-cover"
                           onError={(e) => {
                             e.currentTarget.src =
-                              'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f97316" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
+                              'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%231e3a8a" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
                           }}
                         />
                       ) : (
-                        <div className="bg-gradient-to-br from-orange-500 to-red-600 h-48 flex items-center justify-center">
+                        <div className="bg-gradient-to-br from-blue-800 to-red-600 h-48 flex items-center justify-center">
                           <Home className="w-16 h-16 text-white opacity-50" />
                         </div>
                       )}
@@ -910,7 +910,7 @@ export default function StudentsDashboard() {
                       <div className="p-5">
                         <h3 className="font-bold text-lg text-gray-900 mb-2">{property.title}</h3>
                         <div className="flex items-center text-gray-600 text-sm mb-2">
-                          <MapPin className="w-4 h-4 mr-2 text-orange-600" />
+                          <MapPin className="w-4 h-4 mr-2 text-red-600" />
                           <span>{property.address}</span>
                         </div>
                         <p className="text-xs text-gray-600">
@@ -927,10 +927,10 @@ export default function StudentsDashboard() {
         {/* APPLICATIONS TAB */}
         {activeTab === 'applications' && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Applications</h2>
+            <h2 className="text-2xl font-bold text-blue-900 mb-6">My Applications</h2>
             {loading ? (
               <div className="text-center py-20 text-gray-600">
-                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
+                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
                 Loading applications...
               </div>
             ) : applications.length === 0 ? (
@@ -942,7 +942,7 @@ export default function StudentsDashboard() {
                 </p>
                 <button
                   onClick={() => setActiveTab('browse')}
-                  className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition font-medium"
+                  className="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-900 transition font-medium"
                 >
                   Browse Properties
                 </button>
@@ -963,7 +963,7 @@ export default function StudentsDashboard() {
                           {getStatusBadge(app.status)}
                         </div>
                         <p className="text-sm text-gray-600 flex items-center mb-3">
-                          <MapPin className="w-4 h-4 mr-2 text-orange-600" />
+                          <MapPin className="w-4 h-4 mr-2 text-red-600" />
                           {app.property_address || 'Address not available'}
                         </p>
                         {app.notes && (
@@ -1024,7 +1024,7 @@ export default function StudentsDashboard() {
                         {app.status === 'pending' && (
                           <button
                             onClick={() => openEditApplication(app)}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition flex items-center gap-2 text-sm"
+                            className="bg-blue-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center gap-2 text-sm"
                           >
                             <Edit className="w-4 h-4" /> Edit Application
                           </button>
@@ -1044,7 +1044,7 @@ export default function StudentsDashboard() {
             <div className="bg-white rounded-lg shadow-sm p-8">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 bg-orange-600 rounded-full flex items-center justify-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center">
                     <User className="w-10 h-10 text-white" />
                   </div>
                   <div>
@@ -1055,7 +1055,7 @@ export default function StudentsDashboard() {
                 {!editingProfile && (
                   <button
                     onClick={() => setEditingProfile(true)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition flex items-center gap-2"
+                    className="bg-blue-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center gap-2"
                   >
                     <Edit className="w-4 h-4" /> Edit Profile
                   </button>
@@ -1066,7 +1066,7 @@ export default function StudentsDashboard() {
                 <div className="space-y-4">
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center text-gray-700">
-                      <Mail className="w-5 h-5 mr-3 text-orange-600" />
+                      <Mail className="w-5 h-5 mr-3 text-blue-800" />
                       <div>
                         <p className="text-xs text-gray-500">Email</p>
                         <p className="font-medium">{profile.email}</p>
@@ -1076,7 +1076,7 @@ export default function StudentsDashboard() {
 
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center text-gray-700">
-                      <Phone className="w-5 h-5 mr-3 text-orange-600" />
+                      <Phone className="w-5 h-5 mr-3 text-blue-800" />
                       <div>
                         <p className="text-xs text-gray-500">Phone</p>
                         <p className="font-medium">{profile.phone_number}</p>
@@ -1086,7 +1086,7 @@ export default function StudentsDashboard() {
 
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center text-gray-700">
-                      <FileText className="w-5 h-5 mr-3 text-orange-600" />
+                      <FileText className="w-5 h-5 mr-3 text-blue-800" />
                       <div>
                         <p className="text-xs text-gray-500">Student Number</p>
                         <p className="font-medium">{profile.student_number}</p>
@@ -1096,7 +1096,7 @@ export default function StudentsDashboard() {
 
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center text-gray-700">
-                      <Building2 className="w-5 h-5 mr-3 text-orange-600" />
+                      <Building2 className="w-5 h-5 mr-3 text-blue-800" />
                       <div>
                         <p className="text-xs text-gray-500">Campus</p>
                         <p className="font-medium">{profile.campus}</p>
@@ -1116,7 +1116,7 @@ export default function StudentsDashboard() {
                       onChange={(e) =>
                         setEditProfileForm({ ...editProfileForm, phone_number: e.target.value })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                       required
                     />
                   </div>
@@ -1131,7 +1131,7 @@ export default function StudentsDashboard() {
                       onChange={(e) =>
                         setEditProfileForm({ ...editProfileForm, student_number: e.target.value })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                       required
                     />
                   </div>
@@ -1155,7 +1155,7 @@ export default function StudentsDashboard() {
                               current_password: e.target.value,
                             })
                           }
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                           placeholder="Leave blank to keep current password"
                         />
                       </div>
@@ -1173,7 +1173,7 @@ export default function StudentsDashboard() {
                               new_password: e.target.value,
                             })
                           }
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                           placeholder="Enter new password"
                         />
                       </div>
@@ -1191,7 +1191,7 @@ export default function StudentsDashboard() {
                               confirm_password: e.target.value,
                             })
                           }
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none"
                           placeholder="Confirm new password"
                         />
                       </div>
@@ -1255,7 +1255,7 @@ export default function StudentsDashboard() {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto shadow-2xl my-8">
             <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-center z-10 rounded-t-2xl">
-              <h3 className="text-2xl font-bold text-gray-900">{selectedProperty.title}</h3>
+              <h3 className="text-2xl font-bold text-blue-900">{selectedProperty.title}</h3>
               <button
                 onClick={() => setSelectedProperty(null)}
                 className="text-gray-500 hover:text-gray-700 transition"
@@ -1274,7 +1274,7 @@ export default function StudentsDashboard() {
                     onClick={() => setFullscreenImage(true)}
                     onError={(e) => {
                       e.currentTarget.src =
-                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f97316" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%231e3a8a" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
                     }}
                   />
                   {/* Fullscreen Icon Overlay */}
@@ -1321,7 +1321,7 @@ export default function StudentsDashboard() {
                   )}
                 </div>
               ) : (
-                <div className="bg-gradient-to-br from-orange-500 to-red-600 h-96 rounded-xl flex items-center justify-center mb-8">
+                <div className="bg-gradient-to-br from-blue-800 to-red-600 h-96 rounded-xl flex items-center justify-center mb-8">
                   <Home className="w-32 h-32 text-white opacity-50" />
                 </div>
               )}
@@ -1353,7 +1353,7 @@ export default function StudentsDashboard() {
                   </div>
 
                   <div className="flex items-start text-gray-600 mb-4">
-                    <MapPin className="w-5 h-5 mr-3 text-orange-600 mt-1 flex-shrink-0" />
+                    <MapPin className="w-5 h-5 mr-3 text-red-600 mt-1 flex-shrink-0" />
                     <p className="text-lg">{selectedProperty.address}</p>
                   </div>
 
@@ -1368,7 +1368,7 @@ export default function StudentsDashboard() {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
                       <p className="text-sm text-gray-600">Available Units</p>
-                      <p className="text-2xl font-bold text-orange-600">
+                      <p className="text-2xl font-bold text-blue-800">
                         {selectedProperty.available_flats}
                       </p>
                     </div>
@@ -1425,7 +1425,7 @@ export default function StudentsDashboard() {
                 ) : !showApplyModal ? (
                   <button
                     onClick={() => setShowApplyModal(true)}
-                    className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 rounded-lg font-bold text-lg hover:shadow-xl transition flex items-center justify-center gap-3"
+                    className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-lg font-bold text-lg hover:shadow-xl transition flex items-center justify-center gap-3"
                   >
                     <Send className="w-6 h-6" />
                     <span>Apply Now</span>
@@ -1441,7 +1441,7 @@ export default function StudentsDashboard() {
                         value={applicationNotes}
                         onChange={(e) => setApplicationNotes(e.target.value)}
                         placeholder="Tell us why you're interested in this property..."
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent outline-none resize-none"
                         rows={4}
                       />
                     </div>
@@ -1487,7 +1487,7 @@ export default function StudentsDashboard() {
             className="max-w-[95vw] max-h-[95vh] object-contain"
             onError={(e) => {
               e.currentTarget.src =
-                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f97316" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
+                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%231e3a8a" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
             }}
           />
 
@@ -1529,7 +1529,7 @@ export default function StudentsDashboard() {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-center rounded-t-2xl">
-              <h3 className="text-2xl font-bold text-gray-900">Edit Application</h3>
+              <h3 className="text-2xl font-bold text-blue-900">Edit Application</h3>
               <button
                 onClick={() => setEditingApplication(null)}
                 className="text-gray-500 hover:text-gray-700 transition"
@@ -1556,7 +1556,7 @@ export default function StudentsDashboard() {
                   onChange={(e) =>
                     setEditAppForm({ ...editAppForm, por: e.target.files?.[0] || null })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                 />
                 {editingApplication.proof_of_registration && (
                   <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
@@ -1575,7 +1575,7 @@ export default function StudentsDashboard() {
                   onChange={(e) =>
                     setEditAppForm({ ...editAppForm, idCopy: e.target.files?.[0] || null })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                 />
                 {editingApplication.id_copy && (
                   <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
@@ -1592,7 +1592,7 @@ export default function StudentsDashboard() {
                   onChange={(e) =>
                     setEditAppForm({ ...editAppForm, fundingApproved: e.target.checked })
                   }
-                  className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
+                  className="w-5 h-5 text-blue-800 rounded focus:ring-blue-700"
                 />
                 <label htmlFor="funding_approved" className="text-sm font-medium text-gray-700">
                   I have been approved for funding

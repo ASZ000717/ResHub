@@ -19,9 +19,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://campusstay.co.za",
-        "https://www.campusstay.co.za",
-        "http://campusstay.co.za",
+        "https://reshub.co.za",
+        "https://www.reshub.co.za",
+        "https://reshub-1.onrender.com",
     ],
     allow_credentials=True,               
     allow_methods=["*"],

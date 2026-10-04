@@ -100,15 +100,15 @@ export default function VerifyEmail() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
               <Home className="w-7 h-7 text-white" />
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-700 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
               ResHub
             </span>
           </div>
@@ -118,8 +118,8 @@ export default function VerifyEmail() {
         <div className="bg-white rounded-2xl shadow-2xl p-10 text-center mb-4">
           {status === 'loading' && (
             <>
-              <Loader2 className="w-16 h-16 animate-spin text-orange-600 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Verifying Your Email...</h2>
+              <Loader2 className="w-16 h-16 animate-spin text-blue-800 mx-auto mb-6" />
+              <h2 className="text-2xl font-bold text-blue-900 mb-2">Verifying Your Email...</h2>
               <p className="text-gray-600">Please wait while we verify your account.</p>
             </>
           )}
@@ -144,11 +144,11 @@ export default function VerifyEmail() {
               
               {/* Countdown Display */}
               {canRedirect && (
-                <div className="bg-orange-50 border-2 border-orange-200 rounded-lg p-4 mb-4">
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-center space-x-3">
-                    <Loader2 className="w-5 h-5 animate-spin text-orange-600" />
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-800" />
                     <span className="text-gray-700 font-medium">
-                      Redirecting to login in <span className="text-2xl font-bold text-orange-600">{countdown}</span> second{countdown !== 1 ? 's' : ''}...
+                      Redirecting to login in <span className="text-2xl font-bold text-blue-800">{countdown}</span> second{countdown !== 1 ? 's' : ''}...
                     </span>
                   </div>
                 </div>
@@ -157,7 +157,7 @@ export default function VerifyEmail() {
               {/* Manual redirect button */}
               <button
                 onClick={handleManualRedirect}
-                className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2 mx-auto"
+                className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2 mx-auto"
               >
                 <LogIn className="w-5 h-5" /> Go to Login Now
               </button>
@@ -187,7 +187,7 @@ export default function VerifyEmail() {
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={handleManualRedirect}
-                  className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2"
+                  className="bg-gradient-to-r from-blue-900 to-blue-700 text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2"
                 >
                   <LogIn className="w-5 h-5" /> Try Login Anyway
                 </button>

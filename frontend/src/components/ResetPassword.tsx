@@ -100,15 +100,15 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
               <Home className="w-7 h-7 text-white" />
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-700 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
               ResHub
             </span>
           </div>
@@ -128,11 +128,11 @@ export default function ResetPassword() {
               
               {/* Countdown Display */}
               {canRedirect && (
-                <div className="bg-orange-50 border-2 border-orange-200 rounded-lg p-4 mb-4">
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-center space-x-3">
-                    <Loader2 className="w-5 h-5 animate-spin text-orange-600" />
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-800" />
                     <span className="text-gray-700 font-medium">
-                      Redirecting to login in <span className="text-2xl font-bold text-orange-600">{countdown}</span> second{countdown !== 1 ? 's' : ''}...
+                      Redirecting to login in <span className="text-2xl font-bold text-blue-800">{countdown}</span> second{countdown !== 1 ? 's' : ''}...
                     </span>
                   </div>
                 </div>
@@ -141,7 +141,7 @@ export default function ResetPassword() {
               {/* Manual redirect button */}
               <button
                 onClick={handleManualRedirect}
-                className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2 mx-auto"
+                className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2 mx-auto"
               >
                 <LogIn className="w-5 h-5" /> Go to Login Now
               </button>
@@ -151,10 +151,10 @@ export default function ResetPassword() {
           /* Reset Password Form */
           <div className="bg-white rounded-2xl p-8 shadow-xl">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lock className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Reset Your Password</h2>
+              <h2 className="text-3xl font-bold text-blue-900 mb-2">Reset Your Password</h2>
               <p className="text-gray-600">Enter your new password below</p>
             </div>
 
@@ -174,7 +174,7 @@ export default function ResetPassword() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                   placeholder="Enter new password (min. 6 characters)"
                   required
                   disabled={loading || !token}
@@ -190,7 +190,7 @@ export default function ResetPassword() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 outline-none"
                   placeholder="Confirm new password"
                   required
                   disabled={loading || !token}
@@ -201,7 +201,7 @@ export default function ResetPassword() {
               <button
                 type="submit"
                 disabled={loading || !token}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-gradient-to-r from-blue-900 to-blue-700 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? (
                   <>
@@ -220,7 +220,7 @@ export default function ResetPassword() {
             <div className="mt-6 text-center">
               <button
                 onClick={handleManualRedirect}
-                className="text-orange-600 hover:text-orange-700 font-medium text-sm flex items-center gap-2 mx-auto"
+                className="text-red-600 hover:text-red-700 font-medium text-sm flex items-center gap-2 mx-auto"
               >
                 <LogIn className="w-4 h-4" /> Back to Login
               </button>

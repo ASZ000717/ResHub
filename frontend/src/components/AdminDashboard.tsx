@@ -221,7 +221,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-800 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -232,10 +232,10 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
-          <Shield className="w-16 h-16 text-orange-600 mx-auto mb-4" />
+          <Shield className="w-16 h-16 text-blue-800 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Access Restricted</h2>
           <p className="text-gray-600 mb-6">This page is for administrators only.</p>
-          <a href="/" className="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
+          <a href="/" className="inline-flex items-center gap-2 bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition">
             <Home className="w-5 h-5" /> Back to Home
           </a>
         </div>
@@ -513,7 +513,7 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => { confirmDialog.onConfirm(); setConfirmDialog({ ...confirmDialog, show: false }); }}
-                className={`px-4 py-2 rounded-lg font-medium transition ${confirmDialog.type === 'danger' ? 'bg-red-600 hover:bg-red-700 text-white' : confirmDialog.type === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                className={`px-4 py-2 rounded-lg font-medium transition ${confirmDialog.type === 'danger' ? 'bg-red-600 hover:bg-red-700 text-white' : confirmDialog.type === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : 'bg-blue-800 hover:bg-blue-900 text-white'}`}
               >
                 Confirm
               </button>
@@ -527,11 +527,11 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+                <h1 className="text-xl font-bold text-blue-900">Admin Dashboard</h1>
                 <p className="text-sm text-gray-600">Welcome, {user.full_name || 'Admin'}</p>
               </div>
             </div>
@@ -551,7 +551,7 @@ export default function AdminDashboard() {
               { label: 'Applications', value: stats.total_applications, color: 'purple', icon: <Users className="w-5 h-5" /> },
               { label: 'Pending', value: stats.pending_applications, color: 'yellow', icon: <Clock className="w-5 h-5" /> },
               { label: 'Approved', value: stats.approved_applications, color: 'green', icon: <CheckCircle className="w-5 h-5" /> },
-              { label: 'Occupancy', value: `${stats.occupancy_rate}%`, color: 'orange', icon: <BarChart3 className="w-5 h-5" /> },
+              { label: 'Occupancy', value: `${stats.occupancy_rate}%`, color: 'red', icon: <BarChart3 className="w-5 h-5" /> },
             ].map((s, i) => (
               <div key={i} className={`bg-white rounded-lg shadow-sm p-4 border-l-4 border-${s.color}-500`}>
                 <div className="flex items-center justify-between mb-2">
@@ -569,7 +569,7 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-sm p-1 flex gap-1">
           {['properties', 'applications', 'analytics'].map(tab => (
-            <button key={tab} onClick={() => setActiveTab(tab as any)} className={`flex-1 py-2 px-4 rounded-md font-medium text-sm transition ${activeTab === tab ? 'bg-orange-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab as any)} className={`flex-1 py-2 px-4 rounded-md font-medium text-sm transition ${activeTab === tab ? 'bg-blue-800 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}>
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
@@ -580,8 +580,8 @@ export default function AdminDashboard() {
       {activeTab === 'properties' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Property Management</h2>
-            <button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-700 transition shadow-sm">
+            <h2 className="text-2xl font-bold text-blue-900">Property Management</h2>
+            <button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition shadow-sm">
               <Plus className="w-5 h-5" /> Add Property
             </button>
           </div>
@@ -596,12 +596,12 @@ export default function AdminDashboard() {
                       alt={p.title} 
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23f97316" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
+                        e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%231e3a8a" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"%3E🏠%3C/text%3E%3C/svg%3E';
                       }}
                     />
                   </div>
                 ) : (
-                  <div className="bg-gradient-to-br from-orange-500 to-red-600 h-48 flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-blue-800 to-red-600 h-48 flex items-center justify-center">
                     <Home className="w-16 h-16 text-white opacity-50" />
                   </div>
                 )}
@@ -609,7 +609,7 @@ export default function AdminDashboard() {
                 <div className="p-5">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{p.title}</h3>
                   <p className="text-sm text-gray-600 flex items-center mb-3">
-                    <MapPin className="w-4 h-4 mr-1.5 text-orange-600" />
+                    <MapPin className="w-4 h-4 mr-1.5 text-red-600" />
                     {p.address}
                   </p>
                   <p className="text-xs text-gray-500 mb-2">
@@ -622,7 +622,7 @@ export default function AdminDashboard() {
                   <div className="bg-gray-50 rounded-lg p-4 mb-4">
                     <div className="flex justify-between text-sm font-semibold mb-2">
                       <span className="text-gray-600">Available</span>
-                      <span className="text-orange-600">{p.available_flats} / {p.total_flats}</span>
+                      <span className="text-blue-800">{p.available_flats} / {p.total_flats}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div className={`h-2 rounded-full transition-all ${p.available_flats > 0 ? 'bg-green-500' : 'bg-gray-400'}`} style={{ width: `${(p.available_flats / p.total_flats) * 100}%` }} />
@@ -630,7 +630,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="flex gap-2">
-                    <button onClick={() => openEdit(p)} className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2 text-sm">
+                    <button onClick={() => openEdit(p)} className="flex-1 bg-blue-800 text-white py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center justify-center gap-2 text-sm">
                       <Edit className="w-4 h-4" /> Edit
                     </button>
                     <button onClick={() => deleteProperty(p.id)} className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition">
@@ -647,10 +647,10 @@ export default function AdminDashboard() {
       {/* Applications Tab - Compact View with Expand */}
       {activeTab === 'applications' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Pending Applications</h2>
+          <h2 className="text-2xl font-bold text-blue-900 mb-6">Pending Applications</h2>
           {loading ? (
             <div className="text-center py-20 text-gray-600">
-              <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
+              <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
               Loading applications...
             </div>
           ) : pendingApplications.length === 0 ? (
@@ -669,11 +669,11 @@ export default function AdminDashboard() {
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <User className="w-5 h-5 text-orange-600" />
+                        <User className="w-5 h-5 text-blue-800" />
                         <h3 className="text-lg font-bold text-gray-900">{app.student_name}</h3>
                         {getStatusBadge(app.status)}
                       </div>
-                      <p className="text-sm text-gray-600 ml-8">Applied for: <span className="font-semibold text-orange-600">{app.property_title}</span></p>
+                      <p className="text-sm text-gray-600 ml-8">Applied for: <span className="font-semibold text-blue-800">{app.property_title}</span></p>
                       <p className="text-xs text-gray-500 ml-8 mt-1">
                         {new Date(app.applied_at).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}
                       </p>
@@ -684,7 +684,7 @@ export default function AdminDashboard() {
                           e.stopPropagation();
                           loadApplicationDetails(app.id);
                         }}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition flex items-center gap-1.5 text-sm"
+                        className="bg-blue-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center gap-1.5 text-sm"
                       >
                         <FileText className="w-4 h-4" /> View Docs
                       </button>
@@ -700,16 +700,16 @@ export default function AdminDashboard() {
                           <h4 className="text-sm font-semibold text-gray-600 mb-2">Contact Information</h4>
                           <div className="space-y-1.5 text-sm text-gray-700">
                             <p className="flex items-center gap-2">
-                              <Mail className="w-4 h-4 text-orange-600" /> {app.student_email}
+                              <Mail className="w-4 h-4 text-blue-800" /> {app.student_email}
                             </p>
                             {app.student_phone && (
                               <p className="flex items-center gap-2">
-                                <Phone className="w-4 h-4 text-orange-600" /> {app.student_phone}
+                                <Phone className="w-4 h-4 text-blue-800" /> {app.student_phone}
                               </p>
                             )}
                             {app.student_number && (
                               <p className="flex items-center gap-2">
-                                <FileText className="w-4 h-4 text-orange-600" /> {app.student_number}
+                                <FileText className="w-4 h-4 text-blue-800" /> {app.student_number}
                               </p>
                             )}
                           </div>
@@ -757,7 +757,7 @@ export default function AdminDashboard() {
       {/* Analytics Tab - Only Handled Applications */}
       {activeTab === 'analytics' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Application History & Analytics</h2>
+          <h2 className="text-2xl font-bold text-blue-900 mb-6">Application History & Analytics</h2>
           
           {/* Property Selector */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -765,7 +765,7 @@ export default function AdminDashboard() {
             <select
               value={selectedPropertyForAnalytics || ''}
               onChange={(e) => setSelectedPropertyForAnalytics(Number(e.target.value) || null)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-base"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent text-base"
             >
               <option value="">-- Select a property --</option>
               {properties.map(p => (
@@ -832,9 +832,9 @@ export default function AdminDashboard() {
                                     {getStatusBadge(app.status)}
                                   </div>
                                   <div className="space-y-1 text-sm text-gray-600">
-                                    <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-orange-600" /> {app.student_email}</p>
-                                    {app.student_phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-orange-600" /> {app.student_phone}</p>}
-                                    {app.student_number && <p className="flex items-center gap-2"><FileText className="w-4 h-4 text-orange-600" /> {app.student_number}</p>}
+                                    <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-blue-800" /> {app.student_email}</p>
+                                    {app.student_phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-blue-800" /> {app.student_phone}</p>}
+                                    {app.student_number && <p className="flex items-center gap-2"><FileText className="w-4 h-4 text-blue-800" /> {app.student_number}</p>}
                                     {app.funding_approved !== undefined && (
                                       <div className="mt-2">
                                         <span className={`text-xs font-semibold px-2 py-1 rounded ${app.funding_approved ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
@@ -856,7 +856,7 @@ export default function AdminDashboard() {
                                 <div className="flex flex-col gap-2">
                                   <button 
                                     onClick={() => loadApplicationDetails(app.id)} 
-                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center gap-1.5 text-sm"
+                                    className="bg-blue-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center justify-center gap-1.5 text-sm"
                                   >
                                     <FileText className="w-4 h-4" /> View Documents
                                   </button>
@@ -886,7 +886,7 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Add New Property</h2>
+              <h2 className="text-xl font-bold text-blue-900">Add New Property</h2>
               <button onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-6 h-6" />
               </button>
@@ -900,7 +900,7 @@ export default function AdminDashboard() {
                   placeholder="e.g., Student Haven Apartments"
                   value={addForm.title}
                   onChange={e => setAddForm({ ...addForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                   required
                 />
               </div>
@@ -912,7 +912,7 @@ export default function AdminDashboard() {
                   placeholder="e.g., 123 Main Street, Johannesburg"
                   value={addForm.address}
                   onChange={e => setAddForm({ ...addForm, address: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                   required
                 />
               </div>
@@ -928,14 +928,14 @@ export default function AdminDashboard() {
                       onClick={() => toggleCampus(campus, 'add')}
                       className={`p-3 border-2 rounded-lg cursor-pointer transition ${
                         addForm.campus_intake.includes(campus)
-                          ? 'border-orange-500 bg-orange-50 text-orange-700'
+                          ? 'border-blue-700 bg-blue-50 text-blue-800'
                           : 'border-gray-300 hover:border-gray-400 text-gray-700'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
                           addForm.campus_intake.includes(campus)
-                            ? 'border-orange-500 bg-orange-500'
+                            ? 'border-blue-700 bg-blue-700'
                             : 'border-gray-400'
                         }`}>
                           {addForm.campus_intake.includes(campus) && (
@@ -958,7 +958,7 @@ export default function AdminDashboard() {
                   id="is_bachelor"
                   checked={addForm.is_bachelor}
                   onChange={e => setAddForm({ ...addForm, is_bachelor: e.target.checked })}
-                  className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-blue-800 rounded focus:ring-blue-700"
                 />
                 <label htmlFor="is_bachelor" className="text-sm font-medium text-gray-700">Bachelor Flats</label>
               </div>
@@ -971,7 +971,7 @@ export default function AdminDashboard() {
                     placeholder="10"
                     value={addForm.available_flats}
                     onChange={e => setAddForm({ ...addForm, available_flats: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                     required
                     min="0"
                   />
@@ -986,7 +986,7 @@ export default function AdminDashboard() {
                     placeholder="2"
                     value={addForm.space_per_student}
                     onChange={e => setAddForm({ ...addForm, space_per_student: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                     required
                     min="1"
                   />
@@ -1009,7 +1009,7 @@ export default function AdminDashboard() {
                     }
                     setAddForm({ ...addForm, images: [...addForm.images, ...files] });
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                 />
                 <div className="flex flex-wrap gap-2 mt-3">
                   {addForm.images.map((f, i) => (
@@ -1031,7 +1031,7 @@ export default function AdminDashboard() {
                 <button
                   type="submit"
                   disabled={addForm.images.length === 0}
-                  className="flex-1 bg-orange-600 text-white py-2.5 rounded-lg font-medium hover:bg-orange-700 transition flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="flex-1 bg-blue-800 text-white py-2.5 rounded-lg font-medium hover:bg-blue-900 transition flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   <Plus className="w-5 h-5" /> Add Property
                 </button>
@@ -1053,7 +1053,7 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Edit Property #{editingProperty.id}</h2>
+              <h2 className="text-xl font-bold text-blue-900">Edit Property #{editingProperty.id}</h2>
               <button onClick={() => setEditingProperty(null)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-6 h-6" />
               </button>
@@ -1067,7 +1067,7 @@ export default function AdminDashboard() {
                   placeholder="Property Title"
                   value={editForm.title}
                   onChange={e => setEditForm({ ...editForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                   required
                 />
               </div>
@@ -1079,7 +1079,7 @@ export default function AdminDashboard() {
                   placeholder="Address"
                   value={editForm.address}
                   onChange={e => setEditForm({ ...editForm, address: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                   required
                 />
               </div>
@@ -1095,14 +1095,14 @@ export default function AdminDashboard() {
                       onClick={() => toggleCampus(campus, 'edit')}
                       className={`p-3 border-2 rounded-lg cursor-pointer transition ${
                         editForm.campus_intake.includes(campus)
-                          ? 'border-orange-500 bg-orange-50 text-orange-700'
+                          ? 'border-blue-700 bg-blue-50 text-blue-800'
                           : 'border-gray-300 hover:border-gray-400 text-gray-700'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
                           editForm.campus_intake.includes(campus)
-                            ? 'border-orange-500 bg-orange-500'
+                            ? 'border-blue-700 bg-blue-700'
                             : 'border-gray-400'
                         }`}>
                           {editForm.campus_intake.includes(campus) && (
@@ -1125,7 +1125,7 @@ export default function AdminDashboard() {
                   id="edit_is_bachelor"
                   checked={editForm.is_bachelor}
                   onChange={e => setEditForm({ ...editForm, is_bachelor: e.target.checked })}
-                  className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-blue-800 rounded focus:ring-blue-700"
                 />
                 <label htmlFor="edit_is_bachelor" className="text-sm font-medium text-gray-700">Bachelor Flats</label>
               </div>
@@ -1138,7 +1138,7 @@ export default function AdminDashboard() {
                     placeholder="Available Flats"
                     value={editForm.available_flats}
                     onChange={e => setEditForm({ ...editForm, available_flats: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                     required
                     min="0"
                   />
@@ -1153,7 +1153,7 @@ export default function AdminDashboard() {
                     placeholder="2"
                     value={editForm.space_per_student}
                     onChange={e => setEditForm({ ...editForm, space_per_student: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                     required
                     min="1"
                   />
@@ -1201,7 +1201,7 @@ export default function AdminDashboard() {
                     }
                     setEditForm({ ...editForm, newImages: [...editForm.newImages, ...files] });
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                 />
                 <div className="flex flex-wrap gap-2 mt-3">
                   {editForm.newImages.map((f, i) => (
@@ -1245,7 +1245,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-8">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Student Documents</h2>
+                <h2 className="text-2xl font-bold text-blue-900">Student Documents</h2>
                 <p className="text-sm text-gray-600 mt-1">{viewingDocs.student_name} - {viewingDocs.property_title}</p>
               </div>
               <button onClick={() => setViewingDocs(null)} className="text-gray-400 hover:text-gray-600 transition">
@@ -1255,34 +1255,34 @@ export default function AdminDashboard() {
 
             {loadingDocs ? (
               <div className="p-12 text-center">
-                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
+                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
                 <p className="text-gray-600">Loading documents...</p>
               </div>
             ) : (
               <div className="p-6 max-h-[calc(90vh-8rem)] overflow-y-auto">
                 {/* Student Info */}
-                <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 mb-6 border-2 border-orange-200">
+                <div className="bg-gradient-to-r from-blue-50 to-red-50 rounded-xl p-6 mb-6 border-2 border-blue-200">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <h3 className="text-sm font-semibold text-gray-600 mb-3">Student Information</h3>
                       <div className="space-y-2 text-sm">
                         <p className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-orange-600" />
+                          <User className="w-4 h-4 text-blue-800" />
                           <span className="font-semibold">Name:</span> {viewingDocs.student_name}
                         </p>
                         <p className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-orange-600" />
+                          <Mail className="w-4 h-4 text-blue-800" />
                           <span className="font-semibold">Email:</span> {viewingDocs.student_email}
                         </p>
                         {viewingDocs.student_phone && (
                           <p className="flex items-center gap-2">
-                            <Phone className="w-4 h-4 text-orange-600" />
+                            <Phone className="w-4 h-4 text-blue-800" />
                             <span className="font-semibold">Phone:</span> {viewingDocs.student_phone}
                           </p>
                         )}
                         {viewingDocs.student_number && (
                           <p className="flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-orange-600" />
+                            <FileText className="w-4 h-4 text-blue-800" />
                             <span className="font-semibold">Student #:</span> {viewingDocs.student_number}
                           </p>
                         )}
@@ -1296,7 +1296,7 @@ export default function AdminDashboard() {
                         </p>
                         {viewingDocs.property_address && (
                           <p className="flex items-start gap-2">
-                            <MapPin className="w-4 h-4 text-orange-600 mt-0.5" />
+                            <MapPin className="w-4 h-4 text-red-600 mt-0.5" />
                             {viewingDocs.property_address}
                           </p>
                         )}
@@ -1328,7 +1328,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   {viewingDocs.notes && (
-                    <div className="mt-4 pt-4 border-t border-orange-200">
+                    <div className="mt-4 pt-4 border-t border-blue-200">
                       <p className="text-sm">
                         <span className="font-semibold text-gray-700">Notes:</span>{' '}
                         <span className="text-gray-600">{viewingDocs.notes}</span>
@@ -1339,8 +1339,8 @@ export default function AdminDashboard() {
 
                 {/* Documents */}
                 <div className="space-y-5">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <FileText className="w-6 h-6 text-orange-600" /> Supporting Documents
+                  <h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+                    <FileText className="w-6 h-6 text-blue-800" /> Supporting Documents
                   </h3>
 
                   {/* Proof of Registration */}
@@ -1356,7 +1356,7 @@ export default function AdminDashboard() {
                             href={viewingDocs.proof_of_registration}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-orange-600 hover:text-orange-700 flex items-center gap-1.5 text-sm font-semibold bg-white px-4 py-2 rounded-lg shadow-sm transition"
+                            className="text-blue-800 hover:text-blue-900 flex items-center gap-1.5 text-sm font-semibold bg-white px-4 py-2 rounded-lg shadow-sm transition"
                           >
                             <Download className="w-4 h-4" /> Download
                           </a>
@@ -1394,7 +1394,7 @@ export default function AdminDashboard() {
                             href={viewingDocs.id_copy}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-orange-600 hover:text-orange-700 flex items-center gap-1.5 text-sm font-semibold bg-white px-4 py-2 rounded-lg shadow-sm transition"
+                            className="text-blue-800 hover:text-blue-900 flex items-center gap-1.5 text-sm font-semibold bg-white px-4 py-2 rounded-lg shadow-sm transition"
                           >
                             <Download className="w-4 h-4" /> Download
                           </a>

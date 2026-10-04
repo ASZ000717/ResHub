@@ -6,9 +6,9 @@ from urllib.parse import quote
 
 # Resend Configuration
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "noreply@campusstay.co.za")
-FROM_NAME = os.getenv("FROM_NAME", "CampusStay TUT")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://campusstay.co.za").rstrip('/')  # Remove trailing slash
+RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "noreply@reshub.co.za")
+FROM_NAME = os.getenv("FROM_NAME", "ResHub TUT")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://reshub-1.onrender.com").rstrip('/')  # Remove trailing slash
 
 # Set the API key globally (Resend SDK requires this)
 if RESEND_API_KEY:
@@ -74,7 +74,7 @@ def send_verification_email(student_email: str, student_name: str, verification_
     encoded_token = quote(verification_token, safe='')
     verification_link = f"{FRONTEND_URL}/#/verify-email?token={encoded_token}"
     
-    subject = "Verify Your CampusStay Account"
+    subject = "Verify Your ResHub Account"
     
     html_body = f"""
     <!DOCTYPE html>
@@ -85,24 +85,24 @@ def send_verification_email(student_email: str, student_name: str, verification_
         <style>
             body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }}
             .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-            .header {{ background: linear-gradient(135deg, #ea580c, #dc2626); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-            .content {{ background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }}
-            .button {{ display: inline-block; background: #ea580c; color: white !important; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }}
-            .button:hover {{ background: #dc2626; }}
-            .alert {{ background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px; }}
-            .footer {{ text-align: center; margin-top: 30px; color: #6b7280; font-size: 12px; }}
-            .link-text {{ word-break: break-all; color: #6b7280; font-size: 14px; background: #f3f4f6; padding: 10px; border-radius: 4px; margin-top: 10px; }}
+            .header {{ background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; border-bottom: 4px solid #dc2626; }}
+            .content {{ background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .button {{ display: inline-block; background: #dc2626; color: white !important; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }}
+            .button:hover {{ background: #b91c1c; }}
+            .alert {{ background: #eff6ff; border-left: 4px solid #1e3a8a; padding: 15px; margin: 20px 0; border-radius: 4px; }}
+            .footer {{ text-align: center; margin-top: 30px; color: #64748b; font-size: 12px; }}
+            .link-text {{ word-break: break-all; color: #475569; font-size: 14px; background: #e2e8f0; padding: 10px; border-radius: 4px; margin-top: 10px; }}
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1 style="margin: 0;">✉️ Welcome to CampusStay!</h1>
+                <h1 style="margin: 0;">✉️ Welcome to ResHub!</h1>
             </div>
             <div class="content">
                 <p>Dear <strong>{student_name}</strong>,</p>
                 
-                <p>Thank you for registering with CampusStay at Tshwane University of Technology!</p>
+                <p>Thank you for registering with ResHub at Tshwane University of Technology!</p>
                 
                 <p>To complete your registration and start applying for accommodation, please verify your email address by clicking the button below:</p>
                 
@@ -126,7 +126,7 @@ def send_verification_email(student_email: str, student_name: str, verification_
                 </ul>
                 
                 <div class="footer">
-                    <p><strong>CampusStay - Tshwane University of Technology</strong></p>
+                    <p><strong>ResHub - Tshwane University of Technology</strong></p>
                     <p>If you didn't create this account, please ignore this email.</p>
                     <p>This is an automated email. Please do not reply directly to this message.</p>
                 </div>
@@ -137,18 +137,18 @@ def send_verification_email(student_email: str, student_name: str, verification_
     """
     
     text_body = f"""
-    Welcome to CampusStay!
+    Welcome to ResHub!
     
     Dear {student_name},
     
-    Thank you for registering with CampusStay at TUT!
+    Thank you for registering with ResHub at TUT!
     
     Please verify your email address by clicking this link:
     {verification_link}
     
     This link will expire in 24 hours.
     
-    CampusStay - Tshwane University of Technology
+    ResHub - Tshwane University of Technology
     """
     
     print(f"\n🔗 Verification link generated:")
@@ -171,7 +171,7 @@ def send_password_reset_email(student_email: str, student_name: str, reset_token
     encoded_token = quote(reset_token, safe='')
     reset_link = f"{FRONTEND_URL}/#/reset-password?token={encoded_token}"
     
-    subject = "Reset Your CampusStay Password"
+    subject = "Reset Your ResHub Password"
     
     html_body = f"""
     <!DOCTYPE html>
@@ -182,14 +182,14 @@ def send_password_reset_email(student_email: str, student_name: str, reset_token
         <style>
             body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }}
             .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-            .header {{ background: linear-gradient(135deg, #ea580c, #dc2626); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-            .content {{ background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }}
-            .button {{ display: inline-block; background: #ea580c; color: white !important; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }}
-            .button:hover {{ background: #dc2626; }}
-            .alert {{ background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px; }}
+            .header {{ background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; border-bottom: 4px solid #dc2626; }}
+            .content {{ background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .button {{ display: inline-block; background: #dc2626; color: white !important; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }}
+            .button:hover {{ background: #b91c1c; }}
+            .alert {{ background: #eff6ff; border-left: 4px solid #1e3a8a; padding: 15px; margin: 20px 0; border-radius: 4px; }}
             .warning {{ background: #fee2e2; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 4px; }}
-            .footer {{ text-align: center; margin-top: 30px; color: #6b7280; font-size: 12px; }}
-            .link-text {{ word-break: break-all; color: #6b7280; font-size: 14px; background: #f3f4f6; padding: 10px; border-radius: 4px; margin-top: 10px; }}
+            .footer {{ text-align: center; margin-top: 30px; color: #64748b; font-size: 12px; }}
+            .link-text {{ word-break: break-all; color: #475569; font-size: 14px; background: #e2e8f0; padding: 10px; border-radius: 4px; margin-top: 10px; }}
         </style>
     </head>
     <body>
@@ -200,7 +200,7 @@ def send_password_reset_email(student_email: str, student_name: str, reset_token
             <div class="content">
                 <p>Dear <strong>{student_name}</strong>,</p>
                 
-                <p>We received a request to reset your CampusStay password. Click the button below to create a new password:</p>
+                <p>We received a request to reset your ResHub password. Click the button below to create a new password:</p>
                 
                 <p style="text-align: center;">
                     <a href="{reset_link}" class="button" style="color: white;">Reset My Password</a>
@@ -219,7 +219,7 @@ def send_password_reset_email(student_email: str, student_name: str, reset_token
                 </div>
                 
                 <div class="footer">
-                    <p><strong>CampusStay - Tshwane University of Technology</strong></p>
+                    <p><strong>ResHub - Tshwane University of Technology</strong></p>
                     <p>This is an automated email. Please do not reply directly to this message.</p>
                 </div>
             </div>
@@ -233,7 +233,7 @@ def send_password_reset_email(student_email: str, student_name: str, reset_token
     
     Dear {student_name},
     
-    We received a request to reset your CampusStay password.
+    We received a request to reset your ResHub password.
     
     Click this link to reset your password:
     {reset_link}
@@ -242,7 +242,7 @@ def send_password_reset_email(student_email: str, student_name: str, reset_token
     
     If you didn't request this, please ignore this email.
     
-    CampusStay - Tshwane University of Technology
+    ResHub - Tshwane University of Technology
     """
     
     print(f"\n🔗 Password reset link generated:")
@@ -274,11 +274,11 @@ def send_application_confirmation_email(
         <style>
             body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
             .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-            .header {{ background: linear-gradient(135deg, #ea580c, #dc2626); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-            .content {{ background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }}
-            .property-card {{ background: white; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #ea580c; }}
-            .button {{ display: inline-block; background: #ea580c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }}
-            .footer {{ text-align: center; margin-top: 30px; color: #6b7280; font-size: 12px; }}
+            .header {{ background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; border-bottom: 4px solid #dc2626; }}
+            .content {{ background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .property-card {{ background: white; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #1e3a8a; }}
+            .button {{ display: inline-block; background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }}
+            .footer {{ text-align: center; margin-top: 30px; color: #64748b; font-size: 12px; }}
         </style>
     </head>
     <body>
@@ -302,7 +302,7 @@ def send_application_confirmation_email(
                 </p>
                 
                 <div class="footer">
-                    <p><strong>CampusStay - TUT</strong></p>
+                    <p><strong>ResHub - TUT</strong></p>
                 </div>
             </div>
         </div>
@@ -330,9 +330,9 @@ def send_application_approved_email(
             body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
             .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
             .header {{ background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-            .content {{ background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .content {{ background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }}
             .button {{ display: inline-block; background: #10b981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }}
-            .footer {{ text-align: center; margin-top: 30px; color: #6b7280; font-size: 12px; }}
+            .footer {{ text-align: center; margin-top: 30px; color: #64748b; font-size: 12px; }}
         </style>
     </head>
     <body>
@@ -351,7 +351,7 @@ def send_application_approved_email(
                 </p>
                 
                 <div class="footer">
-                    <p><strong>CampusStay - TUT</strong></p>
+                    <p><strong>ResHub - TUT</strong></p>
                 </div>
             </div>
         </div>
@@ -379,9 +379,9 @@ def send_application_rejected_email(
             body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
             .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
             .header {{ background: linear-gradient(135deg, #6b7280, #4b5563); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-            .content {{ background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }}
-            .button {{ display: inline-block; background: #ea580c; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }}
-            .footer {{ text-align: center; margin-top: 30px; color: #6b7280; font-size: 12px; }}
+            .content {{ background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .button {{ display: inline-block; background: #1e3a8a; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }}
+            .footer {{ text-align: center; margin-top: 30px; color: #64748b; font-size: 12px; }}
         </style>
     </head>
     <body>
@@ -401,7 +401,7 @@ def send_application_rejected_email(
                 </p>
                 
                 <div class="footer">
-                    <p><strong>CampusStay - TUT</strong></p>
+                    <p><strong>ResHub - TUT</strong></p>
                 </div>
             </div>
         </div>
@@ -427,9 +427,9 @@ def send_document_reminder_email(
         <style>
             body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
             .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-            .header {{ background: linear-gradient(135deg, #f59e0b, #ea580c); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-            .content {{ background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }}
-            .button {{ display: inline-block; background: #ea580c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }}
+            .header {{ background: linear-gradient(135deg, #1e3a8a, #dc2626); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+            .content {{ background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .button {{ display: inline-block; background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }}
         </style>
     </head>
     <body>
