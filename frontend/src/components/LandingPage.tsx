@@ -53,10 +53,7 @@ export default function LandingPage() {
       console.log('Current localStorage token:', localStorage.getItem('access_token')?.substring(0, 20) + '...');
       
       // Force a small delay to ensure state updates
-      setTimeout(() => {
-        console.log('Checking if redirect happened...');
-        console.log('Current path:', window.location.pathname);
-        
+      
         // If still on home page after 500ms, manually redirect
         if (window.location.pathname === '/') {
           const user = JSON.parse(localStorage.getItem('user') || '{}');
