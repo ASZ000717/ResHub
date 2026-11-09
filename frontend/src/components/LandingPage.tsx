@@ -53,19 +53,21 @@ export default function LandingPage() {
       console.log('Current localStorage token:', localStorage.getItem('access_token')?.substring(0, 20) + '...');
       
       // Force a small delay to ensure state updates
-      
-        // If still on home page after 500ms, manually redirect
-      if (window.location.pathname === '/') {
-          const user = JSON.parse(localStorage.getItem('user') || '{}');
-          console.log('Manual redirect for user:', user);
-          if (user.role === 'admin') {
-            console.log('Forcing redirect to /admin');
-            window.location.href = '/admin';
-          } else if (user.role === 'student') {
-            console.log('Forcing redirect to /student');
-            window.location.href = '/student';
-          } 
-      }
+ setTimeout(() => {
+  console.log('Checking if redirect happened...');
+  console.log('Current hash:', window.location.hash);
+
+  // Only force if still on home
+  if (!window.location.hash || window.location.hash === '#/' || window.location.hash === '#') {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    console.log('Manual redirect for user:', user);
+    if (user.role === 'admin') {
+      window.location.hash = '/admin/dashboard';
+    } else if (user.role === 'student') {
+      window.location.hash = '/student/dashboard';
+    }
+  }
+}, 500);
       
     } catch (err: any) {
       console.error('Login error:', err);
