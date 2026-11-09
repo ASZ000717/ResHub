@@ -10,7 +10,7 @@ from starlette.responses import Response
 # ── 1. FastAPI app ─────────────────────────────────────────────
 # ✅ Disable automatic trailing slash redirects globally
 app = FastAPI(
-    title="CampusStay API", 
+    title="ResHub API", 
     version="1.0.0",
     redirect_slashes=False  # Prevents 307 redirects
 )
