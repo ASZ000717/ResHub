@@ -126,6 +126,7 @@ def debug_cors():
     return {
         "message": "If you can see this, CORS is working!",
         "allowed_origins": [
+            "https://reshub.org.za",
             "http://localhost:5173",
             "http://localhost:3000",
             "https://reshub-1.onrender.com",
