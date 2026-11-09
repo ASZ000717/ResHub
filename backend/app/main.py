@@ -19,8 +19,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://reshub.co.za",
-        "https://www.reshub.co.za",
+        "https://reshub.org.za",
+        "https://www.reshub.org.za",
         "https://reshub-1.onrender.com",
         "http://reshub-1.onrender.com"
     ],
@@ -126,8 +126,6 @@ def debug_cors():
     return {
         "message": "If you can see this, CORS is working!",
         "allowed_origins": [
-            "https://campusstay.co.za",
-            "http://campusstay.co.za",
             "http://localhost:5173",
             "http://localhost:3000",
             "https://reshub-1.onrender.com",
