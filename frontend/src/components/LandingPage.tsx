@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Home, Shield, Clock, MapPin, Users, ChevronRight, Menu, X, Mail } from 'lucide-react';
 import { login, registerStudent } from '../utils/auth';
 import { fetcher } from '../utils/api';
+import { useResource } from '../utils/useResource';
+import LoadFeedback from './LoadFeedback';
 
 interface PublicStats {
   listings: number;
@@ -10,15 +12,7 @@ interface PublicStats {
 }
 
 export default function LandingPage() {
-  const [stats, setStats] = useState<PublicStats | null>(null);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetcher('/public/stats', { signal: controller.signal })
-      .then(setStats)
-      .catch(() => setStats(null));
-    return () => controller.abort();
-  }, []);
+  const { data: stats, status: statsStatus, reload: reloadStats } = useResource<PublicStats | null>('/public/stats', null);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -232,22 +226,26 @@ export default function LandingPage() {
                   Learn More
                 </button>
               </div>
-              <div className="flex items-center space-x-8 pt-4">
+              {statsStatus !== 'success' ? (
+                <LoadFeedback status={statsStatus} label="ResHub statistics" onRetry={reloadStats} />
+              ) : stats && (
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-3 pt-4">
                 <div>
-                  <div className="text-3xl font-bold text-blue-900">{stats?.listings.toLocaleString('en-ZA') ?? '?'}</div>
+                  <div className="text-3xl font-bold text-blue-900">{stats.listings.toLocaleString('en-ZA')}</div>
                   <div className="text-gray-600">Listings</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-900">{stats?.approved_students.toLocaleString('en-ZA') ?? '?'}</div>
+                  <div className="text-3xl font-bold text-blue-900">{stats.approved_students.toLocaleString('en-ZA')}</div>
                   <div className="text-gray-600">Approved Students</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-blue-900">
-                    {stats?.satisfaction_percent != null ? `${stats.satisfaction_percent}%` : '?'}
+                    {stats.satisfaction_percent != null ? `${stats.satisfaction_percent}%` : '?'}
                   </div>
                   <div className="text-gray-600">Satisfaction</div>
                 </div>
               </div>
+              )}
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-800 to-red-600 rounded-3xl p-8 shadow-2xl transform rotate-3 hover:rotate-0 transition duration-500">

@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, useMemo, type FormEvent } from 'react';
 import {
   Home,
   Search,
@@ -25,10 +25,11 @@ import {
   Upload,
   File,
   AlertCircle,
-  Loader,
   Maximize2,
 } from 'lucide-react';
-import { API_BASE } from '../utils/api';
+import { API_BASE, request } from '../utils/api';
+import { useResource } from '../utils/useResource';
+import LoadFeedback from './LoadFeedback';
 
 interface Property {
   id: number;
@@ -84,12 +85,15 @@ export default function StudentsDashboard() {
   const [authReady, setAuthReady] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const canLoad = authReady && token && user?.role === 'student';
+  const propertiesResource = useResource<Property[]>(canLoad ? '/students/properties' : null, []);
+  const applicationsResource = useResource<Application[]>(canLoad ? '/students/applications/my-applications' : null, []);
+  const profileResource = useResource<StudentProfile | null>(canLoad ? '/auth/me' : null, null);
+  const { data: properties } = propertiesResource;
+  const { data: applications, setData: setApplications } = applicationsResource;
+  const { data: profile } = profileResource;
   const [favorites, setFavorites] = useState<number[]>([]);
-  const [applications, setApplications] = useState<Application[]>([]);
   const [savingRating, setSavingRating] = useState(false);
-  const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [activeTab, setActiveTab] = useState<'browse' | 'favorites' | 'applications' | 'profile'>('browse');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -100,7 +104,6 @@ export default function StudentsDashboard() {
   const [editingApplication, setEditingApplication] = useState<Application | null>(null);
   const [editingProfile, setEditingProfile] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState(false);
 
@@ -141,7 +144,7 @@ export default function StudentsDashboard() {
     const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
     if (!(init?.body instanceof FormData)) headers['Content-Type'] = 'application/json';
     
-    return fetch(input, { ...init, headers });
+    return request(input, { ...init, headers });
 };
 
   const rateResidence = async (application: Application, rating: number) => {
@@ -166,39 +169,6 @@ export default function StudentsDashboard() {
     }
   };
 
-  const loadData = async () => {
-  setLoading(true);
-  try {
-    const [propsRes, appsRes, profRes] = await Promise.all([
-      fetchWithAuth(`${API}/properties`),
-      fetchWithAuth(`${API}/applications/my-applications`),
-      fetchWithAuth(`${API_BASE}/auth/me`), // ✅ Use /auth/me directly
-    ]);
-
-      if (propsRes.ok) {
-        const props = await propsRes.json();
-        setProperties(props);
-        setFilteredProperties(props);
-      }
-      if (appsRes.ok) setApplications(await appsRes.json());
-      if (profRes.ok) {
-        const prof = await profRes.json();
-        setProfile(prof);
-        setEditProfileForm({
-          phone_number: prof.phone_number || '',
-          student_number: prof.student_number || '',
-          current_password: '',
-          new_password: '',
-          confirm_password: '',
-        });
-      }
-    } catch (err: any) {
-      showNotification('error', err.message || 'Failed to load data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Check auth on mount
   useEffect(() => {
     const checkAuth = () => {
@@ -218,21 +188,13 @@ export default function StudentsDashboard() {
     return () => window.removeEventListener('auth-change', checkAuth);
   }, []);
 
-  // Load data when authenticated
-  useEffect(() => {
-    if (authReady && token && user?.role === 'student') {
-      loadData();
-    }
-  }, [authReady, token, user]);
-
   // Load favorites from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('favorites');
     if (saved) setFavorites(JSON.parse(saved));
   }, []);
 
-  // Apply filters
-  useEffect(() => {
+  const filteredProperties = useMemo(() => {
     let list = [...properties];
 
     if (filters.searchQuery) {
@@ -259,8 +221,10 @@ export default function StudentsDashboard() {
     if (filters.maxSpace) list = list.filter((p) => p.space_per_student <= +filters.maxSpace);
     if (filters.availableOnly) list = list.filter((p) => p.available_flats > 0);
 
-    setFilteredProperties(list);
+    return list;
   }, [filters, properties]);
+
+  const favoriteProperties = properties.filter((property) => favorites.includes(property.id));
 
   // ✅ NOW conditional returns are AFTER all hooks
   if (!authReady) {
@@ -323,7 +287,7 @@ export default function StudentsDashboard() {
         setShowApplyModal(false);
         setSelectedProperty(null);
         setApplicationNotes('');
-        loadData();
+        void applicationsResource.reload();
       } else {
         const err = await res.json();
         showNotification('error', err.detail || 'Failed to submit application');
@@ -346,11 +310,10 @@ export default function StudentsDashboard() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         `${API}/applications/my-applications/${editingApplication.id}`,
         {
           method: 'PUT',
-          headers: { Authorization: `Bearer ${token}` },
           body: formData,
         }
       );
@@ -359,7 +322,7 @@ export default function StudentsDashboard() {
         showNotification('success', 'Application updated successfully!');
         setEditingApplication(null);
         setEditAppForm({ por: null, idCopy: null, fundingApproved: false });
-        loadData();
+        void applicationsResource.reload();
       } else {
         const err = await res.json();
         showNotification('error', err.detail || 'Failed to update application');
@@ -394,7 +357,7 @@ export default function StudentsDashboard() {
         payload.new_password = editProfileForm.new_password;
       }
 
-      const res = await fetchWithAuth('https://campusstay-backend.onrender.com/auth/update-profile', {
+      const res = await fetchWithAuth(`${API_BASE}/auth/update-profile`, {
         method: 'PUT',
         body: JSON.stringify(payload),
       });
@@ -408,7 +371,7 @@ export default function StudentsDashboard() {
           new_password: '',
           confirm_password: '',
         });
-        loadData();
+        void profileResource.reload();
       } else {
         const err = await res.json();
         showNotification('error', err.detail || 'Failed to update profile');
@@ -755,15 +718,12 @@ export default function StudentsDashboard() {
             {/* Properties Grid */}
             <div className="mb-4 flex justify-between items-center">
               <h2 className="text-2xl font-bold text-blue-900">
-                {filteredProperties.length} Properties Available
+                {propertiesResource.status === 'success' ? `${filteredProperties.length} Properties Available` : 'Properties'}
               </h2>
             </div>
 
-            {loading ? (
-              <div className="text-center py-20 text-gray-600">
-                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
-                Loading properties...
-              </div>
+            {propertiesResource.status !== 'success' ? (
+              <LoadFeedback status={propertiesResource.status} label="properties" onRetry={propertiesResource.reload} />
             ) : filteredProperties.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm p-12 text-center">
                 <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -884,7 +844,9 @@ export default function StudentsDashboard() {
         {activeTab === 'favorites' && (
           <div>
             <h2 className="text-2xl font-bold text-blue-900 mb-6">My Favorite Properties</h2>
-            {favorites.length === 0 ? (
+            {propertiesResource.status !== 'success' ? (
+              <LoadFeedback status={propertiesResource.status} label="favorite properties" onRetry={propertiesResource.reload} />
+            ) : favoriteProperties.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm p-12 text-center">
                 <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-gray-800 mb-2">No Favorites Yet</h3>
@@ -898,9 +860,7 @@ export default function StudentsDashboard() {
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {properties
-                  .filter((p) => favorites.includes(p.id))
-                  .map((property) => (
+                {favoriteProperties.map((property) => (
                     <div
                       key={property.id}
                       className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer relative"
@@ -953,11 +913,8 @@ export default function StudentsDashboard() {
         {activeTab === 'applications' && (
           <div>
             <h2 className="text-2xl font-bold text-blue-900 mb-6">My Applications</h2>
-            {loading ? (
-              <div className="text-center py-20 text-gray-600">
-                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
-                Loading applications...
-              </div>
+            {applicationsResource.status !== 'success' ? (
+              <LoadFeedback status={applicationsResource.status} label="applications" onRetry={applicationsResource.reload} />
             ) : applications.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm p-12 text-center">
                 <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -1081,7 +1038,10 @@ export default function StudentsDashboard() {
         )}
 
         {/* PROFILE TAB */}
-        {activeTab === 'profile' && profile && (
+        {activeTab === 'profile' && profileResource.status !== 'success' && (
+          <LoadFeedback status={profileResource.status} label="your profile" onRetry={profileResource.reload} />
+        )}
+        {activeTab === 'profile' && profileResource.status === 'success' && profile && (
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-lg shadow-sm p-8">
               <div className="flex items-center justify-between mb-8">
@@ -1096,7 +1056,16 @@ export default function StudentsDashboard() {
                 </div>
                 {!editingProfile && (
                   <button
-                    onClick={() => setEditingProfile(true)}
+                    onClick={() => {
+                      setEditProfileForm({
+                        phone_number: profile.phone_number,
+                        student_number: profile.student_number,
+                        current_password: '',
+                        new_password: '',
+                        confirm_password: '',
+                      });
+                      setEditingProfile(true);
+                    }}
                     className="bg-blue-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center gap-2"
                   >
                     <Edit className="w-4 h-4" /> Edit Profile
@@ -1281,7 +1250,7 @@ export default function StudentsDashboard() {
                   </div>
                   <div className="text-center p-4 bg-yellow-50 rounded-lg">
                     <p className="text-3xl font-bold text-yellow-600">
-                      {applications.filter((a) => a.status === 'pending').length}
+                      {applicationsResource.status === 'success' ? applications.filter((a) => a.status === 'pending').length : '?'}
                     </p>
                     <p className="text-sm text-gray-600 mt-1">Pending</p>
                   </div>

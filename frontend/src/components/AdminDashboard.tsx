@@ -23,8 +23,10 @@ import {
   AlertCircle,
   Eye,
   User,
-  Loader,
 } from 'lucide-react';
+import { API_BASE, request } from '../utils/api';
+import { useResource } from '../utils/useResource';
+import LoadFeedback from './LoadFeedback';
 
 interface Property {
   id: number;
@@ -60,6 +62,7 @@ interface Stats {
   total_applications: number;
   pending_applications: number;
   approved_applications: number;
+  rejected_applications?: number;
   occupancy_rate: number;
 }
 
@@ -73,7 +76,7 @@ interface ConfirmDialog {
   show: boolean;
   title: string;
   message: string;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   type: 'danger' | 'warning' | 'info';
 }
 
@@ -86,20 +89,35 @@ const CAMPUSES = [
   'Garankuwa Campus',
 ];
 
+const ADMIN_SECTIONS = [
+  { id: 'properties', label: 'Properties' },
+  { id: 'applications', label: 'Applications' },
+  { id: 'rejected', label: 'Rejected' },
+  { id: 'analytics', label: 'Analytics' },
+] as const;
+
+type AdminSection = typeof ADMIN_SECTIONS[number]['id'] | 'pending' | 'approved';
+
 export default function AdminDashboard() {
   // ✅ ALL HOOKS FIRST - Before any returns!
   const [authReady, setAuthReady] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [activeTab, setActiveTab] = useState<'properties' | 'applications' | 'analytics'>('properties');
+  const canLoad = authReady && token && user?.role === 'admin';
+  const propertiesResource = useResource<Property[]>(canLoad ? '/admin/properties' : null, []);
+  const applicationsResource = useResource<Application[]>(canLoad ? '/admin/applications' : null, []);
+  const statsResource = useResource<Stats | null>(canLoad ? '/admin/stats' : null, null);
+  const { data: properties } = propertiesResource;
+  const { data: applications } = applicationsResource;
+  const { data: stats } = statsResource;
+  const [activeTab, setActiveTab] = useState<AdminSection>('properties');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [viewingDocs, setViewingDocs] = useState<Application | null>(null);
-  const [loadingDocs, setLoadingDocs] = useState(false);
+  const [savingProperty, setSavingProperty] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [documentApp, setDocumentApp] = useState<Application | null>(null);
+  const documents = useResource<Application | null>(documentApp ? `/admin/applications/${documentApp.id}` : null, null);
+  const viewingDocs = documents.data?.id === documentApp?.id ? documents.data : null;
   const [selectedPropertyForAnalytics, setSelectedPropertyForAnalytics] = useState<number | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [confirmDialog, setConfirmDialog] = useState<ConfirmDialog>({
@@ -132,7 +150,7 @@ export default function AdminDashboard() {
     removedImages: [] as string[],
   });
 
-  const API = 'https://reshub-n9hq.onrender.com/admin';
+  const API = `${API_BASE}/admin`;
 
   const showNotification = (type: 'success' | 'error' | 'warning' | 'info', message: string) => {
     const id = Date.now();
@@ -142,52 +160,31 @@ export default function AdminDashboard() {
     }, 5000);
   };
 
-  const showConfirm = (title: string, message: string, onConfirm: () => void, type: 'danger' | 'warning' | 'info' = 'info') => {
+  const showConfirm = (title: string, message: string, onConfirm: () => void | Promise<void>, type: 'danger' | 'warning' | 'info' = 'info') => {
     setConfirmDialog({ show: true, title, message, onConfirm, type });
   };
 
   const fetchWithAuth = async (input: string, init?: RequestInit) => {
     const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
     if (!(init?.body instanceof FormData)) headers['Content-Type'] = 'application/json';
-    return fetch(input, { ...init, headers });
+    return request(input, { ...init, headers });
   };
 
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      console.log('Loading admin data...'); // Debug
-      console.log('Token:', localStorage.getItem('access_token')?.substring(0, 20) + '...'); // Debug
-      
-      const [propRes, appRes, statsRes] = await Promise.all([
-        fetchWithAuth(`${API}/properties`),
-        fetchWithAuth(`${API}/applications`),
-        fetchWithAuth(`${API}/stats`),
-      ]);
-      
-      console.log('Response statuses:', {
-        properties: propRes.status,
-        applications: appRes.status,
-        stats: statsRes.status
-      }); // Debug
-      
-      if (propRes.ok) setProperties(await propRes.json());
-      if (appRes.ok) setApplications(await appRes.json());
-      if (statsRes.ok) setStats(await statsRes.json());
-      
-      // Show error for any failed requests
-      if (!propRes.ok || !appRes.ok || !statsRes.ok) {
-        const errors = [];
-        if (!propRes.ok) errors.push('properties');
-        if (!appRes.ok) errors.push('applications');
-        if (!statsRes.ok) errors.push('stats');
-        showNotification('warning', `Failed to load: ${errors.join(', ')}`);
-      }
-    } catch (err: any) {
-      console.error('Load data error:', err); // Debug
-      showNotification('error', err.message || 'Failed to load data');
-    } finally {
-      setLoading(false);
-    }
+  const loadData = () => {
+    void propertiesResource.reload();
+    void applicationsResource.reload();
+    void statsResource.reload();
+  };
+
+  const jumpToSection = (section: AdminSection) => {
+    const target = document.getElementById(`admin-${section}`);
+    if (!target) return;
+    setActiveTab(section);
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
   };
 
   // Check auth on mount
@@ -208,13 +205,6 @@ export default function AdminDashboard() {
     window.addEventListener('auth-change', checkAuth);
     return () => window.removeEventListener('auth-change', checkAuth);
   }, []);
-
-  // Load data when authenticated
-  useEffect(() => {
-    if (authReady && token && user?.role === 'admin') {
-      loadData();
-    }
-  }, [authReady, token, user]);
 
   // ✅ NOW conditional returns are AFTER all hooks
   if (!authReady) {
@@ -243,21 +233,9 @@ export default function AdminDashboard() {
     );
   }
 
-  const loadApplicationDetails = async (appId: number) => {
-    setLoadingDocs(true);
-    try {
-      const res = await fetchWithAuth(`${API}/applications/${appId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setViewingDocs(data);
-      } else {
-        showNotification('error', 'Failed to load application details');
-      }
-    } catch (err) {
-      showNotification('error', 'Network error loading documents');
-    } finally {
-      setLoadingDocs(false);
-    }
+  const openDocuments = (application: Application) => {
+    documents.setData(null);
+    setDocumentApp(application);
   };
 
   const handleApplicationStatus = async (appId: number, status: 'approved' | 'rejected') => {
@@ -270,7 +248,7 @@ export default function AdminDashboard() {
           if (res.ok) {
             showNotification('success', `Application ${status} successfully!`);
             loadData();
-            setViewingDocs(null);
+            setDocumentApp(null);
           } else {
             const err = await res.json();
             showNotification('error', err.detail || 'Failed to update application');
@@ -344,6 +322,7 @@ export default function AdminDashboard() {
 
   const handleAddProperty = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (savingProperty) return;
     
     if (addForm.campus_intake.length === 0) {
       showNotification('error', 'Please select at least one campus');
@@ -364,6 +343,7 @@ export default function AdminDashboard() {
     formData.append('campus_intake', addForm.campus_intake.join(', '));
     addForm.images.forEach(img => formData.append('images', img));
 
+    setSavingProperty(true);
     try {
       const res = await fetchWithAuth(`${API}/properties`, { method: 'POST', body: formData });
       if (res.ok) {
@@ -377,6 +357,8 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       showNotification('error', 'Network error. Please try again.');
+    } finally {
+      setSavingProperty(false);
     }
   };
 
@@ -396,6 +378,7 @@ export default function AdminDashboard() {
 
   const handleEdit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (savingProperty) return;
     if (!editingProperty) return;
 
     if (editForm.campus_intake.length === 0) {
@@ -418,6 +401,7 @@ export default function AdminDashboard() {
     editForm.newImages.forEach(img => formData.append('new_images', img));
     editForm.removedImages.forEach(url => formData.append('remove_images', url));
     
+    setSavingProperty(true);
     try {
       const res = await fetchWithAuth(`${API}/properties/${editingProperty.id}`, { method: 'PUT', body: formData });
       if (res.ok) {
@@ -430,6 +414,8 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       showNotification('error', 'Network error. Please try again.');
+    } finally {
+      setSavingProperty(false);
     }
   };
 
@@ -455,8 +441,12 @@ export default function AdminDashboard() {
     }
   };
 
-  const pendingApplications = applications.filter(app => app.status === 'pending');
-  const handledApplications = applications.filter(app => app.status !== 'pending');
+  const applicationGroups = {
+    pending: applications.filter((app) => app.status === 'pending'),
+    approved: applications.filter((app) => app.status === 'approved'),
+    rejected: applications.filter((app) => app.status === 'rejected'),
+  };
+  const handledApplications = applications.filter((app) => app.status !== 'pending');
 
   const getNotificationIcon = (type: string) => {
     switch(type) {
@@ -499,7 +489,7 @@ export default function AdminDashboard() {
 
       {/* Confirm Dialog */}
       {confirmDialog.show && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
             <div className={`px-6 py-4 border-b ${confirmDialog.type === 'danger' ? 'bg-red-50 border-red-200' : confirmDialog.type === 'warning' ? 'bg-yellow-50 border-yellow-200' : 'bg-blue-50 border-blue-200'}`}>
               <h3 className="text-lg font-bold text-gray-900">{confirmDialog.title}</h3>
@@ -508,14 +498,23 @@ export default function AdminDashboard() {
               <p className="text-gray-700">{confirmDialog.message}</p>
             </div>
             <div className="px-6 py-4 bg-gray-50 flex gap-3 justify-end rounded-b-xl">
-              <button onClick={() => setConfirmDialog({ ...confirmDialog, show: false })} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition">
+              <button disabled={confirming} onClick={() => setConfirmDialog({ ...confirmDialog, show: false })} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition">
                 Cancel
               </button>
               <button
-                onClick={() => { confirmDialog.onConfirm(); setConfirmDialog({ ...confirmDialog, show: false }); }}
+                disabled={confirming}
+                onClick={async () => {
+                  setConfirming(true);
+                  try {
+                    await confirmDialog.onConfirm();
+                  } finally {
+                    setConfirming(false);
+                    setConfirmDialog((current) => ({ ...current, show: false }));
+                  }
+                }}
                 className={`px-4 py-2 rounded-lg font-medium transition ${confirmDialog.type === 'danger' ? 'bg-red-600 hover:bg-red-700 text-white' : confirmDialog.type === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : 'bg-blue-800 hover:bg-blue-900 text-white'}`}
               >
-                Confirm
+                {confirming ? 'Working...' : 'Confirm'}
               </button>
             </div>
           </div>
@@ -542,50 +541,57 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      {/* Stats */}
-      {stats && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              { label: 'Properties', value: stats.total_properties, color: 'blue', icon: <Building2 className="w-5 h-5" /> },
-              { label: 'Applications', value: stats.total_applications, color: 'purple', icon: <Users className="w-5 h-5" /> },
-              { label: 'Pending', value: stats.pending_applications, color: 'yellow', icon: <Clock className="w-5 h-5" /> },
-              { label: 'Approved', value: stats.approved_applications, color: 'green', icon: <CheckCircle className="w-5 h-5" /> },
-              { label: 'Occupancy', value: `${stats.occupancy_rate}%`, color: 'red', icon: <BarChart3 className="w-5 h-5" /> },
-            ].map((s, i) => (
-              <div key={i} className={`bg-white rounded-lg shadow-sm p-4 border-l-4 border-${s.color}-500`}>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-600 font-medium">{s.label}</p>
-                  <div className={`text-${s.color}-500`}>{s.icon}</div>
-                </div>
-                <p className={`text-2xl font-bold text-${s.color}-600`}>{s.value}</p>
-              </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {statsResource.status !== 'success' ? (
+          <LoadFeedback status={statsResource.status} label="dashboard totals" onRetry={statsResource.reload} />
+        ) : stats && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {([
+              { label: 'Properties', section: 'properties', value: stats.total_properties, color: 'border-blue-500 text-blue-700', Icon: Building2 },
+              { label: 'Applications', section: 'applications', value: stats.total_applications, color: 'border-purple-500 text-purple-700', Icon: Users },
+              { label: 'Pending', section: 'pending', value: stats.pending_applications, color: 'border-yellow-500 text-yellow-700', Icon: Clock },
+              { label: 'Approved', section: 'approved', value: stats.approved_applications, color: 'border-green-500 text-green-700', Icon: CheckCircle },
+              { label: 'Rejected', section: 'rejected', value: stats.rejected_applications ?? (applicationsResource.status === 'success' ? applicationGroups.rejected.length : '?'), color: 'border-red-500 text-red-700', Icon: XCircle },
+              { label: 'Occupancy', section: 'analytics', value: `${stats.occupancy_rate}%`, color: 'border-blue-500 text-blue-700', Icon: BarChart3 },
+            ] as const).map(({ label, section, value, color, Icon }) => (
+              <button key={label} type="button" onClick={() => jumpToSection(section)} className={`bg-white rounded-lg shadow-sm p-4 border-l-4 text-left hover:shadow-md ${color}`}>
+                <span className="flex items-center justify-between gap-1 mb-2">
+                  <span className="text-sm text-gray-600 font-medium">{label}</span>
+                  <Icon aria-hidden="true" className="w-5 h-5 shrink-0" />
+                </span>
+                <span className="text-2xl font-bold">{value}</span>
+              </button>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-sm p-1 flex gap-1">
-          {['properties', 'applications', 'analytics'].map(tab => (
-            <button key={tab} onClick={() => setActiveTab(tab as any)} className={`flex-1 py-2 px-4 rounded-md font-medium text-sm transition ${activeTab === tab ? 'bg-blue-800 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}>
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
+        )}
       </div>
 
-      {/* Properties Tab */}
-      {activeTab === 'properties' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <nav aria-label="Admin dashboard sections" className="sticky top-0 z-20 bg-gray-50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="bg-white rounded-lg shadow-sm p-1 grid grid-cols-2 sm:grid-cols-4 gap-1">
+          {ADMIN_SECTIONS.map(({ id, label }) => {
+            const selected = activeTab === id || (id === 'applications' && (activeTab === 'pending' || activeTab === 'approved'));
+            return (
+              <button key={id} type="button" aria-controls={`admin-${id}`} aria-current={selected ? 'location' : undefined} onClick={() => jumpToSection(id)} className={`py-2 px-2 rounded-md font-medium text-sm transition ${selected ? 'bg-blue-800 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}>
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
+      <section id="admin-properties" aria-labelledby="admin-properties-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-blue-900">Property Management</h2>
+            <h2 className="text-2xl font-bold text-blue-900" id="admin-properties-title">Property Management</h2>
             <button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition shadow-sm">
               <Plus className="w-5 h-5" /> Add Property
             </button>
           </div>
 
+          {propertiesResource.status !== 'success' ? (
+            <LoadFeedback status={propertiesResource.status} label="properties" onRetry={propertiesResource.reload} />
+          ) : properties.length === 0 ? (
+            <p className="rounded-lg bg-white p-8 text-center text-gray-600">No properties yet.</p>
+          ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map(p => (
               <div key={p.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition">
@@ -641,55 +647,52 @@ export default function AdminDashboard() {
               </div>
             ))}
           </div>
-        </div>
-      )}
+          )}
+      </section>
 
-      {/* Applications Tab - Compact View with Expand */}
-      {activeTab === 'applications' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h2 className="text-2xl font-bold text-blue-900 mb-6">Pending Applications</h2>
-          {loading ? (
-            <div className="text-center py-20 text-gray-600">
-              <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
-              Loading applications...
-            </div>
-          ) : pendingApplications.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-lg shadow-sm">
-              <Clock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-lg text-gray-600">No pending applications</p>
-            </div>
+      <section id="admin-applications" aria-labelledby="admin-applications-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <h2 id="admin-applications-title" className="text-2xl font-bold text-blue-900">Applications</h2>
+      </section>
+      {(['pending', 'approved', 'rejected'] as const).map((status) => {
+        const sectionApps = applicationGroups[status];
+        const title = `${status[0].toUpperCase()}${status.slice(1)} Applications`;
+        return (
+        <section key={status} id={`admin-${status}`} aria-labelledby={`admin-${status}-title`} tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h3 id={`admin-${status}-title`} className="text-xl font-bold text-blue-900 mb-4">{title}</h3>
+          {applicationsResource.status !== 'success' ? (
+            <LoadFeedback status={applicationsResource.status} label={`${status} applications`} onRetry={applicationsResource.reload} />
+          ) : sectionApps.length === 0 ? (
+            <p className="rounded-lg bg-white p-8 text-center text-gray-600">No {status} applications.</p>
           ) : (
             <div className="space-y-3">
-              {pendingApplications.map(app => (
+              {sectionApps.map(app => (
                 <div key={app.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
                   {/* Compact Summary */}
-                  <div 
-                    className="p-5 cursor-pointer flex items-center justify-between"
-                    onClick={() => setExpandedAppId(expandedAppId === app.id ? null : app.id)}
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <User className="w-5 h-5 text-blue-800" />
-                        <h3 className="text-lg font-bold text-gray-900">{app.student_name}</h3>
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-5">
+                    <button
+                      type="button"
+                      aria-expanded={expandedAppId === app.id}
+                      onClick={() => setExpandedAppId(expandedAppId === app.id ? null : app.id)}
+                      className="flex-1 text-left"
+                    >
+                      <span className="mb-1 flex flex-wrap items-center gap-2">
+                        <User aria-hidden="true" className="w-5 h-5 text-blue-800" />
+                        <span className="text-lg font-bold text-gray-900">{app.student_name}</span>
                         {getStatusBadge(app.status)}
-                      </div>
-                      <p className="text-sm text-gray-600 ml-8">Applied for: <span className="font-semibold text-blue-800">{app.property_title}</span></p>
-                      <p className="text-xs text-gray-500 ml-8 mt-1">
+                        <Eye aria-hidden="true" className="w-4 h-4 text-gray-500" />
+                      </span>
+                      <span className="ml-7 block text-sm text-gray-600">Applied for <span className="font-semibold text-blue-800">{app.property_title}</span></span>
+                      <span className="ml-7 mt-1 block text-xs text-gray-500">
                         {new Date(app.applied_at).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          loadApplicationDetails(app.id);
-                        }}
-                        className="bg-blue-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center gap-1.5 text-sm"
-                      >
-                        <FileText className="w-4 h-4" /> View Docs
-                      </button>
-                      <Eye className={`w-5 h-5 text-gray-400 transition-transform ${expandedAppId === app.id ? 'rotate-180' : ''}`} />
-                    </div>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openDocuments(app)}
+                      className="flex items-center gap-1.5 rounded-lg bg-blue-800 px-4 py-2 text-sm font-medium text-white hover:bg-blue-900"
+                    >
+                      <FileText className="w-4 h-4" /> View Docs
+                    </button>
                   </div>
 
                   {/* Expanded Details */}
@@ -731,6 +734,7 @@ export default function AdminDashboard() {
                         </div>
                       </div>
 
+                      {app.status === 'pending' ? (
                       <div className="flex gap-2 pt-2">
                         <button 
                           onClick={() => handleApplicationStatus(app.id, 'approved')} 
@@ -745,20 +749,31 @@ export default function AdminDashboard() {
                           <XCircle className="w-4 h-4" /> Reject
                         </button>
                       </div>
+                      ) : (
+                        <button type="button" onClick={() => deleteApplication(app.id)} className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
+                          <Trash2 className="w-4 h-4" /> Delete
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
               ))}
             </div>
           )}
-        </div>
-      )}
+        </section>
+        );
+      })}
 
-      {/* Analytics Tab - Only Handled Applications */}
-      {activeTab === 'analytics' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h2 className="text-2xl font-bold text-blue-900 mb-6">Application History & Analytics</h2>
-          
+      <section id="admin-analytics" aria-labelledby="admin-analytics-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h2 id="admin-analytics-title" className="text-2xl font-bold text-blue-900 mb-6">Application History &amp; Analytics</h2>
+          {propertiesResource.status !== 'success' ? (
+            <LoadFeedback status={propertiesResource.status} label="properties for analytics" onRetry={propertiesResource.reload} />
+          ) : applicationsResource.status !== 'success' ? (
+            <LoadFeedback status={applicationsResource.status} label="application history" onRetry={applicationsResource.reload} />
+          ) : properties.length === 0 ? (
+            <p className="rounded-lg bg-white p-8 text-center text-gray-600">No properties to analyze.</p>
+          ) : (
+          <>
           {/* Property Selector */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-3">Select Property to Analyze</label>
@@ -855,7 +870,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="flex flex-col gap-2">
                                   <button 
-                                    onClick={() => loadApplicationDetails(app.id)} 
+                                    onClick={() => openDocuments(app)}
                                     className="bg-blue-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-900 transition flex items-center justify-center gap-1.5 text-sm"
                                   >
                                     <FileText className="w-4 h-4" /> View Documents
@@ -878,8 +893,9 @@ export default function AdminDashboard() {
               })()}
             </>
           )}
-        </div>
-      )}
+          </>
+          )}
+      </section>
 
       {/* ADD PROPERTY MODAL */}
       {showAddForm && (
@@ -887,7 +903,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
               <h2 className="text-xl font-bold text-blue-900">Add New Property</h2>
-              <button onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600">
+              <button disabled={savingProperty} onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -1030,13 +1046,14 @@ export default function AdminDashboard() {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  disabled={addForm.images.length === 0}
+                  disabled={savingProperty || addForm.images.length === 0}
                   className="flex-1 bg-blue-800 text-white py-2.5 rounded-lg font-medium hover:bg-blue-900 transition flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
-                  <Plus className="w-5 h-5" /> Add Property
+                  <Plus className="w-5 h-5" /> {savingProperty ? 'Adding...' : 'Add Property'}
                 </button>
                 <button
                   type="button"
+                  disabled={savingProperty}
                   onClick={() => setShowAddForm(false)}
                   className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition"
                 >
@@ -1054,7 +1071,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
               <h2 className="text-xl font-bold text-blue-900">Edit Property #{editingProperty.id}</h2>
-              <button onClick={() => setEditingProperty(null)} className="text-gray-400 hover:text-gray-600">
+              <button disabled={savingProperty} onClick={() => setEditingProperty(null)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -1222,12 +1239,14 @@ export default function AdminDashboard() {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-green-600 text-white py-2.5 rounded-lg font-medium hover:bg-green-700 transition flex items-center justify-center gap-2"
+                  disabled={savingProperty}
+                  className="flex-1 disabled:opacity-60 bg-green-600 text-white py-2.5 rounded-lg font-medium hover:bg-green-700 transition flex items-center justify-center gap-2"
                 >
-                  <Save className="w-5 h-5" /> Update Property
+                  <Save className="w-5 h-5" /> {savingProperty ? 'Updating...' : 'Update Property'}
                 </button>
                 <button
                   type="button"
+                  disabled={savingProperty}
                   onClick={() => setEditingProperty(null)}
                   className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition"
                 >
@@ -1240,24 +1259,21 @@ export default function AdminDashboard() {
       )}
 
       {/* VIEW DOCUMENTS MODAL */}
-      {viewingDocs && (
+      {documentApp && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-8">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
               <div>
                 <h2 className="text-2xl font-bold text-blue-900">Student Documents</h2>
-                <p className="text-sm text-gray-600 mt-1">{viewingDocs.student_name} - {viewingDocs.property_title}</p>
+                <p className="text-sm text-gray-600 mt-1">{documentApp.student_name} - {documentApp.property_title}</p>
               </div>
-              <button onClick={() => setViewingDocs(null)} className="text-gray-400 hover:text-gray-600 transition">
+              <button onClick={() => setDocumentApp(null)} className="text-gray-400 hover:text-gray-600 transition">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            {loadingDocs ? (
-              <div className="p-12 text-center">
-                <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-800" />
-                <p className="text-gray-600">Loading documents...</p>
-              </div>
+            {documents.status !== 'success' || !viewingDocs ? (
+              <LoadFeedback status={documents.status === 'error' ? 'error' : 'loading'} label="documents" onRetry={documents.reload} />
             ) : (
               <div className="p-6 max-h-[calc(90vh-8rem)] overflow-y-auto">
                 {/* Student Info */}
@@ -1439,7 +1455,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <button
-                      onClick={() => setViewingDocs(null)}
+                      onClick={() => setDocumentApp(null)}
                       className="w-full bg-gray-100 text-gray-700 py-4 rounded-xl font-bold hover:bg-gray-200 transition text-lg"
                     >
                       Close

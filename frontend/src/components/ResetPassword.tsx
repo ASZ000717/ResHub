@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Home, Lock, CheckCircle, AlertCircle, LogIn, Loader2 } from 'lucide-react';
 
-const API_BASE = 'https://reshub-n9hq.onrender';
+import { API_BASE, request } from '../utils/api';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -67,7 +67,7 @@ export default function ResetPassword() {
     try {
       const url = `${API_BASE}/auth/reset-password`;
       
-      const response = await fetch(url, {
+      const response = await request(url, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

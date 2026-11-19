@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { CheckCircle, XCircle, Loader2, Home, LogIn } from 'lucide-react';
 
-const API_BASE = 'https://reshub-n9hq.onrender.com';
+import { API_BASE, request } from '../utils/api';
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
@@ -17,11 +17,12 @@ export default function VerifyEmail() {
 
   // Main verification effect
   useEffect(() => {
-    let executed = false;
+    const controller = new AbortController();
 
     const verifyEmail = async () => {
-      if (executed) return;
-      executed = true;
+      setCanRedirect(false);
+      setCountdown(5);
+      setStatus('loading');
 
       if (!token) {
         setStatus('error');
@@ -32,7 +33,8 @@ export default function VerifyEmail() {
       try {
         const url = `${API_BASE}/auth/verify-email?token=${encodeURIComponent(token)}`;
         
-        const response = await fetch(url, {
+        const response = await request(url, {
+          signal: controller.signal,
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -60,6 +62,7 @@ export default function VerifyEmail() {
           data.status === 'success' ||
           data.status === 'already_verified';
 
+        if (controller.signal.aborted) return;
         if (isSuccess) {
           setStatus('success');
           setMessage(messageText || 'Email verified successfully!');
@@ -69,12 +72,14 @@ export default function VerifyEmail() {
         }
 
       } catch (error: any) {
+        if (controller.signal.aborted) return;
         setStatus('error');
         setMessage(error.message || 'Verification failed');
       }
     };
 
-    verifyEmail();
+    void verifyEmail();
+    return () => controller.abort();
   }, [token]);
 
   // Countdown effect

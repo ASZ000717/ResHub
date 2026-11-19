@@ -325,6 +325,11 @@ def get_stats(
         models.Application.status == "approved"
     ).count()
 
+    rejected = db.query(models.Application).join(models.Property).filter(
+        models.Property.admin_id == current_admin.id,
+        models.Application.status == "rejected",
+    ).count()
+
     total_spaces = sum(p.total_flats for p in properties)
     occupied = sum(p.total_flats - p.available_flats for p in properties)
     occupancy_rate = round((occupied / total_spaces * 100), 2) if total_spaces > 0 else 0
@@ -334,6 +339,7 @@ def get_stats(
         "total_applications": total_applications,
         "pending_applications": pending,
         "approved_applications": approved,
+        "rejected_applications": rejected,
         "occupancy_rate": occupancy_rate,
     }
 
