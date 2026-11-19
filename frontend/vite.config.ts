@@ -6,6 +6,12 @@ export default defineConfig({
   publicDir: 'public',  // ✅ CRITICAL: This copies files from public/ to dist/
   server: {
     port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
   build: {
     outDir: 'dist',

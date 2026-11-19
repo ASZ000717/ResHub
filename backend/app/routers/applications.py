@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from sqlalchemy import and_
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 from typing import Optional
 from .. import models, database
 from .auth import get_current_user
 from ..core.email_utils import send_application_confirmation_email
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from .students import get_current_student
 import boto3
 import os
 from uuid import uuid4
@@ -43,18 +46,55 @@ class ApplicationCreate(BaseModel):
     notes: str = ""
 
 
+class ResidenceRatingInput(BaseModel):
+    rating: int = Field(strict=True, ge=1, le=5)
+
+
+@router.put("/my-applications/{app_id}/rating")
+def save_residence_rating(
+    app_id: int,
+    payload: ResidenceRatingInput,
+    db: Session = Depends(database.get_db),
+    student: models.Student = Depends(get_current_student),
+):
+    application = db.query(models.Application).filter_by(
+        id=app_id, student_id=student.id,
+    ).with_for_update().one_or_none()
+    if application is None:
+        raise HTTPException(status_code=404, detail="Application not found")
+    if application.status != "approved":
+        raise HTTPException(status_code=403, detail="Only approved applications can be rated")
+
+    statement = insert(models.ResidenceRating).values(
+        student_id=student.id, property_id=application.property_id, rating=payload.rating,
+    )
+    db.execute(statement.on_conflict_do_update(
+        index_elements=["student_id", "property_id"],
+        set_={"rating": statement.excluded.rating},
+    ))
+    db.commit()
+    return {"rating": payload.rating}
+
+
 @router.get("/my-applications")
 def my_applications(
     db: Session = Depends(database.get_db),
     current_user=Depends(get_current_user)
 ):
     """Get all applications for current student - documents come from Student table"""
-    applications = db.query(models.Application).filter(
-        models.Application.student_id == current_user.id
-    ).all()
+    rating = models.ResidenceRating
+    application = models.Application
+    applications = db.query(application, rating.rating).outerjoin(
+        rating,
+        and_(
+            rating.student_id == application.student_id,
+            rating.property_id == application.property_id,
+            application.status == "approved",
+        ),
+    ).filter(application.student_id == current_user.id).all()
     
     result = []
-    for app in applications:
+    for app, rating_value in applications:
         prop = db.query(models.Property).filter(models.Property.id == app.property_id).first()
         
         # ✅ Documents are stored on the Student model, NOT Application model
@@ -64,6 +104,7 @@ def my_applications(
             "property_title": prop.title if prop else "Unknown",
             "property_address": prop.address if prop else "Unknown",
             "status": app.status,
+            "rating": rating_value,
             "applied_at": app.applied_at.isoformat(),
             "notes": app.notes,
             "funding_approved": app.funding_approved,

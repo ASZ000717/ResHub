@@ -1,5 +1,5 @@
 # app/models.py
-from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, ForeignKey, Text
+from sqlalchemy import CheckConstraint, Column, Integer, String, Boolean, Float, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .database import Base
@@ -92,3 +92,14 @@ class Application(Base):
 
     student = relationship("Student", back_populates="applications")
     property = relationship("Property", back_populates="applications")
+
+
+class ResidenceRating(Base):
+    __tablename__ = "residence_ratings"
+    __table_args__ = (
+        CheckConstraint("rating BETWEEN 1 AND 5", name="residence_rating_range"),
+    )
+
+    student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE"), primary_key=True)
+    property_id = Column(Integer, ForeignKey("properties.id", ondelete="CASCADE"), primary_key=True)
+    rating = Column(Integer, nullable=False)

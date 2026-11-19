@@ -4,6 +4,7 @@
 -- ========================================
 
 -- Drop tables in correct order
+DROP TABLE IF EXISTS residence_ratings;
 DROP TABLE IF EXISTS property_images CASCADE;
 DROP TABLE IF EXISTS applications CASCADE;
 DROP TABLE IF EXISTS properties CASCADE;
@@ -87,6 +88,16 @@ CREATE TABLE applications (
     applied_at TIMESTAMP DEFAULT NOW(),
     notes TEXT,
     funding_approved BOOLEAN DEFAULT FALSE
+);
+
+-- ========================================
+-- Residence Ratings
+-- ========================================
+CREATE TABLE residence_ratings (
+    student_id INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+    property_id INTEGER NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL CONSTRAINT residence_rating_range CHECK (rating BETWEEN 1 AND 5),
+    PRIMARY KEY (student_id, property_id)
 );
 
 -- ========================================

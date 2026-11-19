@@ -28,6 +28,7 @@ import {
   Loader,
   Maximize2,
 } from 'lucide-react';
+import { API_BASE } from '../utils/api';
 
 interface Property {
   id: number;
@@ -52,6 +53,7 @@ interface Application {
   proof_of_registration?: string;
   id_copy?: string;
   funding_approved?: boolean;
+  rating?: number | null;
 }
 
 interface StudentProfile {
@@ -86,6 +88,7 @@ export default function StudentsDashboard() {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [savingRating, setSavingRating] = useState(false);
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [activeTab, setActiveTab] = useState<'browse' | 'favorites' | 'applications' | 'profile'>('browse');
   const [showFilters, setShowFilters] = useState(false);
@@ -124,7 +127,7 @@ export default function StudentsDashboard() {
     confirm_password: '',
   });
 
-  const API = 'https://reshub-n9hq.onrender.com/students';
+  const API = `${API_BASE}/students`;
 
   const showNotification = (type: 'success' | 'error' | 'warning' | 'info', message: string) => {
     const id = Date.now();
@@ -141,13 +144,35 @@ export default function StudentsDashboard() {
     return fetch(input, { ...init, headers });
 };
 
+  const rateResidence = async (application: Application, rating: number) => {
+    setSavingRating(true);
+    try {
+      const response = await fetchWithAuth(
+        `${API}/applications/my-applications/${application.id}/rating`,
+        { method: 'PUT', body: JSON.stringify({ rating }) },
+      );
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.detail || 'Could not save your rating.');
+      setApplications((current) => current.map((app) =>
+        app.property_id === application.property_id && app.status === 'approved'
+          ? { ...app, rating: result.rating }
+          : app
+      ));
+      showNotification('success', 'Residence rating saved.');
+    } catch (error) {
+      showNotification('error', error instanceof Error ? error.message : 'Could not save your rating.');
+    } finally {
+      setSavingRating(false);
+    }
+  };
+
   const loadData = async () => {
   setLoading(true);
   try {
     const [propsRes, appsRes, profRes] = await Promise.all([
       fetchWithAuth(`${API}/properties`),
       fetchWithAuth(`${API}/applications/my-applications`),
-      fetchWithAuth('https://reshub-n9hq.onrender.com/auth/me'), // ✅ Use /auth/me directly
+      fetchWithAuth(`${API_BASE}/auth/me`), // ✅ Use /auth/me directly
     ]);
 
       if (propsRes.ok) {
@@ -1021,6 +1046,23 @@ export default function StudentsDashboard() {
                             year: 'numeric',
                           })}
                         </p>
+                        {app.status === 'approved' && (
+                          <label className="flex flex-col gap-1 text-left text-sm font-medium text-gray-700">
+                            Rate your residence
+                            <select
+                              aria-label={`Rate ${app.property_title}`}
+                              value={app.rating ?? ''}
+                              disabled={savingRating}
+                              onChange={(event) => void rateResidence(app, Number(event.target.value))}
+                              className="rounded-lg border border-gray-300 bg-white px-3 py-2"
+                            >
+                              <option value="" disabled>Select a rating</option>
+                              {[1, 2, 3, 4, 5].map((rating) => (
+                                <option key={rating} value={rating}>{rating} out of 5</option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
                         {app.status === 'pending' && (
                           <button
                             onClick={() => openEditApplication(app)}

@@ -1,6 +1,9 @@
 # backend/app/main.py - FIXED VERSION
 import os
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+from sqlalchemy import func
+from sqlalchemy.orm import Session
+from . import database, models
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -19,6 +22,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://reshub.org.za",
+        "https://www.reshub.org.za",
         "https://reshub.co.za",
         "https://www.reshub.co.za",
         "https://reshub-1.onrender.com",
@@ -106,6 +111,26 @@ def root():
 @app.head("/")
 def root_head():
     return Response(status_code=200)
+
+@app.get("/public/stats")
+def public_stats(db: Session = Depends(database.get_db)):
+    application = models.Application
+    rating = models.ResidenceRating
+    approved_students = db.query(func.count(application.student_id.distinct())).filter(
+        application.status == "approved",
+    ).scalar()
+    approved_residence = db.query(application.id).filter(
+        application.student_id == rating.student_id,
+        application.property_id == rating.property_id,
+        application.status == "approved",
+    ).exists()
+    average_rating = db.query(func.avg(rating.rating)).filter(approved_residence).scalar()
+    return {
+        "listings": db.query(func.count(models.Property.id)).scalar(),
+        "approved_students": approved_students,
+        "satisfaction_percent": round(average_rating * 20) if average_rating is not None else None,
+    }
+
 
 @app.get("/health")
 def health():

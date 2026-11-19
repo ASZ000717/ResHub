@@ -1,9 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Home, Shield, Clock, MapPin, Users, ChevronRight, Menu, X, Mail } from 'lucide-react';
 import { login, registerStudent } from '../utils/auth';
 import { fetcher } from '../utils/api';
 
+interface PublicStats {
+  listings: number;
+  approved_students: number;
+  satisfaction_percent: number | null;
+}
+
 export default function LandingPage() {
+  const [stats, setStats] = useState<PublicStats | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetcher('/public/stats', { signal: controller.signal })
+      .then(setStats)
+      .catch(() => setStats(null));
+    return () => controller.abort();
+  }, []);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -221,15 +236,17 @@ export default function LandingPage() {
               </div>
               <div className="flex items-center space-x-8 pt-4">
                 <div>
-                  <div className="text-3xl font-bold text-blue-900">500+</div>
+                  <div className="text-3xl font-bold text-blue-900">{stats?.listings.toLocaleString('en-ZA') ?? '?'}</div>
                   <div className="text-gray-600">Listings</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-900">2,000+</div>
-                  <div className="text-gray-600">Happy Students</div>
+                  <div className="text-3xl font-bold text-blue-900">{stats?.approved_students.toLocaleString('en-ZA') ?? '?'}</div>
+                  <div className="text-gray-600">Approved Students</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-900">98%</div>
+                  <div className="text-3xl font-bold text-blue-900">
+                    {stats?.satisfaction_percent != null ? `${stats.satisfaction_percent}%` : '?'}
+                  </div>
                   <div className="text-gray-600">Satisfaction</div>
                 </div>
               </div>
