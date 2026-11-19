@@ -92,11 +92,10 @@ const CAMPUSES = [
 const ADMIN_SECTIONS = [
   { id: 'properties', label: 'Properties' },
   { id: 'applications', label: 'Applications' },
-  { id: 'rejected', label: 'Rejected' },
   { id: 'analytics', label: 'Analytics' },
 ] as const;
 
-type AdminSection = typeof ADMIN_SECTIONS[number]['id'] | 'pending' | 'approved';
+type AdminSection = typeof ADMIN_SECTIONS[number]['id'] | 'approved' | 'rejected';
 
 export default function AdminDashboard() {
   // ✅ ALL HOOKS FIRST - Before any returns!
@@ -110,7 +109,11 @@ export default function AdminDashboard() {
   const { data: properties } = propertiesResource;
   const { data: applications } = applicationsResource;
   const { data: stats } = statsResource;
-  const [activeTab, setActiveTab] = useState<AdminSection>('properties');
+  const [selection, setSelection] = useState<{ section: AdminSection; jump: boolean }>({
+    section: 'properties',
+    jump: false,
+  });
+  const activeSection = selection.section;
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [savingProperty, setSavingProperty] = useState(false);
@@ -177,15 +180,19 @@ export default function AdminDashboard() {
   };
 
   const jumpToSection = (section: AdminSection) => {
-    const target = document.getElementById(`admin-${section}`);
+    setSelection({ section, jump: true });
+  };
+
+  useEffect(() => {
+    if (!selection.jump) return;
+    const target = document.getElementById(`admin-${selection.section}`);
     if (!target) return;
-    setActiveTab(section);
     target.focus({ preventScroll: true });
     target.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
       block: 'start',
     });
-  };
+  }, [selection]);
 
   // Check auth on mount
   useEffect(() => {
@@ -549,7 +556,7 @@ export default function AdminDashboard() {
             {([
               { label: 'Properties', section: 'properties', value: stats.total_properties, color: 'border-blue-500 text-blue-700', Icon: Building2 },
               { label: 'Applications', section: 'applications', value: stats.total_applications, color: 'border-purple-500 text-purple-700', Icon: Users },
-              { label: 'Pending', section: 'pending', value: stats.pending_applications, color: 'border-yellow-500 text-yellow-700', Icon: Clock },
+              { label: 'Pending', section: 'applications', value: stats.pending_applications, color: 'border-yellow-500 text-yellow-700', Icon: Clock },
               { label: 'Approved', section: 'approved', value: stats.approved_applications, color: 'border-green-500 text-green-700', Icon: CheckCircle },
               { label: 'Rejected', section: 'rejected', value: stats.rejected_applications ?? (applicationsResource.status === 'success' ? applicationGroups.rejected.length : '?'), color: 'border-red-500 text-red-700', Icon: XCircle },
               { label: 'Occupancy', section: 'analytics', value: `${stats.occupancy_rate}%`, color: 'border-blue-500 text-blue-700', Icon: BarChart3 },
@@ -567,9 +574,9 @@ export default function AdminDashboard() {
       </div>
 
       <nav aria-label="Admin dashboard sections" className="sticky top-0 z-20 bg-gray-50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <div className="bg-white rounded-lg shadow-sm p-1 grid grid-cols-2 sm:grid-cols-4 gap-1">
+        <div className="bg-white rounded-lg shadow-sm p-1 grid grid-cols-3 gap-1">
           {ADMIN_SECTIONS.map(({ id, label }) => {
-            const selected = activeTab === id || (id === 'applications' && (activeTab === 'pending' || activeTab === 'approved'));
+            const selected = activeSection === id || (id === 'applications' && activeSection === 'approved');
             return (
               <button key={id} type="button" aria-controls={`admin-${id}`} aria-current={selected ? 'location' : undefined} onClick={() => jumpToSection(id)} className={`py-2 px-2 rounded-md font-medium text-sm transition ${selected ? 'bg-blue-800 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}>
                 {label}
@@ -579,7 +586,7 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <section id="admin-properties" aria-labelledby="admin-properties-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <section hidden={activeSection !== 'properties'} id="admin-properties" aria-labelledby="admin-properties-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-blue-900" id="admin-properties-title">Property Management</h2>
             <button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition shadow-sm">
@@ -650,15 +657,13 @@ export default function AdminDashboard() {
           )}
       </section>
 
-      <section id="admin-applications" aria-labelledby="admin-applications-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <h2 id="admin-applications-title" className="text-2xl font-bold text-blue-900">Applications</h2>
-      </section>
       {(['pending', 'approved', 'rejected'] as const).map((status) => {
+        const section = status === 'pending' ? 'applications' : status;
         const sectionApps = applicationGroups[status];
         const title = `${status[0].toUpperCase()}${status.slice(1)} Applications`;
         return (
-        <section key={status} id={`admin-${status}`} aria-labelledby={`admin-${status}-title`} tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h3 id={`admin-${status}-title`} className="text-xl font-bold text-blue-900 mb-4">{title}</h3>
+        <section key={status} hidden={activeSection !== section} id={`admin-${section}`} aria-labelledby={`admin-${section}-title`} tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h2 id={`admin-${section}-title`} className="text-2xl font-bold text-blue-900 mb-6">{title}</h2>
           {applicationsResource.status !== 'success' ? (
             <LoadFeedback status={applicationsResource.status} label={`${status} applications`} onRetry={applicationsResource.reload} />
           ) : sectionApps.length === 0 ? (
@@ -764,7 +769,7 @@ export default function AdminDashboard() {
         );
       })}
 
-      <section id="admin-analytics" aria-labelledby="admin-analytics-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <section hidden={activeSection !== 'analytics'} id="admin-analytics" aria-labelledby="admin-analytics-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h2 id="admin-analytics-title" className="text-2xl font-bold text-blue-900 mb-6">Application History &amp; Analytics</h2>
           {propertiesResource.status !== 'success' ? (
             <LoadFeedback status={propertiesResource.status} label="properties for analytics" onRetry={propertiesResource.reload} />
