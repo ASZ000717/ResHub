@@ -13,7 +13,7 @@ from starlette.responses import Response
 # ── 1. FastAPI app ─────────────────────────────────────────────
 # ✅ Disable automatic trailing slash redirects globally
 app = FastAPI(
-    title="CampusStay API", 
+    title="ResHub API",
     version="1.0.0",
     redirect_slashes=False  # Prevents 307 redirects
 )
@@ -24,8 +24,6 @@ app.add_middleware(
     allow_origins=[
         "https://reshub.org.za",
         "https://www.reshub.org.za",
-        "https://reshub.co.za",
-        "https://www.reshub.co.za",
         "https://reshub-1.onrender.com",
         "http://reshub-1.onrender.com"
     ],
@@ -151,8 +149,7 @@ def debug_cors():
     return {
         "message": "If you can see this, CORS is working!",
         "allowed_origins": [
-            "https://campusstay.co.za",
-            "http://campusstay.co.za",
+            "https://reshub.org.za",
             "http://localhost:5173",
             "http://localhost:3000",
             "https://reshub-1.onrender.com",
