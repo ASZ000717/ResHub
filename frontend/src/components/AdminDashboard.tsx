@@ -5,6 +5,7 @@ import {
   Plus,
   Trash2,
   LogOut,
+  Loader,
   Edit,
   Save,
   X,
@@ -115,6 +116,7 @@ export default function AdminDashboard() {
   });
   const activeSection = selection.section;
   const [showAddForm, setShowAddForm] = useState(false);
+  const [addPropertyError, setAddPropertyError] = useState<string | null>(null);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [savingProperty, setSavingProperty] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -330,14 +332,15 @@ export default function AdminDashboard() {
   const handleAddProperty = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (savingProperty) return;
+    setAddPropertyError(null);
     
     if (addForm.campus_intake.length === 0) {
-      showNotification('error', 'Please select at least one campus');
+      setAddPropertyError('Please select at least one campus.');
       return;
     }
     
     if (addForm.campus_intake.length > 3) {
-      showNotification('error', 'Maximum 3 campuses allowed');
+      setAddPropertyError('Select no more than three campuses.');
       return;
     }
 
@@ -359,11 +362,12 @@ export default function AdminDashboard() {
         setAddForm({ title: '', address: '', is_bachelor: false, available_flats: '', space_per_student: '', campus_intake: [], images: [] });
         loadData();
       } else {
-        const err = await res.json();
-        showNotification('error', err.detail || 'Failed to add property');
+        const error = await res.json().catch(() => null);
+        setAddPropertyError(typeof error?.detail === 'string' ? error.detail : 'Could not add the property.');
       }
-    } catch (err) {
-      showNotification('error', 'Network error. Please try again.');
+    } catch {
+      setAddPropertyError('The server did not confirm the submission. Check the property list before trying again.');
+      void propertiesResource.reload();
     } finally {
       setSavingProperty(false);
     }
@@ -589,7 +593,7 @@ export default function AdminDashboard() {
       <section hidden={activeSection !== 'properties'} id="admin-properties" aria-labelledby="admin-properties-title" tabIndex={-1} className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-blue-900" id="admin-properties-title">Property Management</h2>
-            <button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition shadow-sm">
+            <button onClick={() => { setAddPropertyError(null); setShowAddForm(true); }} className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition shadow-sm">
               <Plus className="w-5 h-5" /> Add Property
             </button>
           </div>
@@ -905,165 +909,183 @@ export default function AdminDashboard() {
       {/* ADD PROPERTY MODAL */}
       {showAddForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-blue-900">Add New Property</h2>
-              <button disabled={savingProperty} onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600">
+          <div role="dialog" aria-modal="true" aria-labelledby="add-property-title" className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+              <h2 id="add-property-title" className="text-xl font-bold text-blue-900">Add New Property</h2>
+              <button type="button" aria-label="Close add property form" disabled={savingProperty} onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-6 h-6" />
               </button>
             </div>
             
-            <form onSubmit={handleAddProperty} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Property Title</label>
-                <input
-                  type="text"
-                  placeholder="e.g., Student Haven Apartments"
-                  value={addForm.title}
-                  onChange={e => setAddForm({ ...addForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <input
-                  type="text"
-                  placeholder="e.g., 123 Main Street, Johannesburg"
-                  value={addForm.address}
-                  onChange={e => setAddForm({ ...addForm, address: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Campus Intake (Select up to 3)
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {CAMPUSES.map(campus => (
-                    <div
-                      key={campus}
-                      onClick={() => toggleCampus(campus, 'add')}
-                      className={`p-3 border-2 rounded-lg cursor-pointer transition ${
-                        addForm.campus_intake.includes(campus)
-                          ? 'border-blue-700 bg-blue-50 text-blue-800'
-                          : 'border-gray-300 hover:border-gray-400 text-gray-700'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
-                          addForm.campus_intake.includes(campus)
-                            ? 'border-blue-700 bg-blue-700'
-                            : 'border-gray-400'
-                        }`}>
-                          {addForm.campus_intake.includes(campus) && (
-                            <CheckCircle className="w-3 h-3 text-white" />
-                          )}
-                        </div>
-                        <span className="text-sm font-medium">{campus}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Selected: {addForm.campus_intake.length} / 3
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="is_bachelor"
-                  checked={addForm.is_bachelor}
-                  onChange={e => setAddForm({ ...addForm, is_bachelor: e.target.checked })}
-                  className="w-4 h-4 text-blue-800 rounded focus:ring-blue-700"
-                />
-                <label htmlFor="is_bachelor" className="text-sm font-medium text-gray-700">Bachelor Flats</label>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleAddProperty}>
+              <fieldset disabled={savingProperty} aria-busy={savingProperty} className="space-y-4 p-6 disabled:opacity-60">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Available Flats</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Property Title</label>
                   <input
-                    type="number"
-                    placeholder="10"
-                    value={addForm.available_flats}
-                    onChange={e => setAddForm({ ...addForm, available_flats: e.target.value })}
+                    type="text"
+                    placeholder="e.g., Student Haven Apartments"
+                    value={addForm.title}
+                    onChange={e => setAddForm({ ...addForm, title: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                     required
-                    min="0"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 123 Main Street, Johannesburg"
+                    value={addForm.address}
+                    onChange={e => setAddForm({ ...addForm, address: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Campus Intake (Select up to 3)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {CAMPUSES.map(campus => (
+                      <button
+                        key={campus}
+                        type="button"
+                        aria-pressed={addForm.campus_intake.includes(campus)}
+                        onClick={() => toggleCampus(campus, 'add')}
+                        className={`p-3 border-2 rounded-lg cursor-pointer transition ${
+                          addForm.campus_intake.includes(campus)
+                            ? 'border-blue-700 bg-blue-50 text-blue-800'
+                            : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                            addForm.campus_intake.includes(campus)
+                              ? 'border-blue-700 bg-blue-700'
+                              : 'border-gray-400'
+                          }`}>
+                            {addForm.campus_intake.includes(campus) && (
+                              <CheckCircle className="w-3 h-3 text-white" />
+                            )}
+                          </div>
+                          <span className="text-sm font-medium">{campus}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Selected: {addForm.campus_intake.length} / 3
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="is_bachelor"
+                    checked={addForm.is_bachelor}
+                    onChange={e => setAddForm({ ...addForm, is_bachelor: e.target.checked })}
+                    className="w-4 h-4 text-blue-800 rounded focus:ring-blue-700"
+                  />
+                  <label htmlFor="is_bachelor" className="text-sm font-medium text-gray-700">Bachelor Flats</label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Available Flats</label>
+                    <input
+                      type="number"
+                      placeholder="10"
+                      value={addForm.available_flats}
+                      onChange={e => setAddForm({ ...addForm, available_flats: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
+                      required
+                      min="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {addForm.is_bachelor ? 'Students Per Unit' : 'Students Per Room'}
+                    </label>
+                    <input
+                      type="number"
+                      step="1"
+                      placeholder="2"
+                      value={addForm.space_per_student}
+                      onChange={e => setAddForm({ ...addForm, space_per_student: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
+                      required
+                      min="1"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {addForm.is_bachelor ? 'Students Per Unit' : 'Students Per Room'}
+                    <Upload className="inline w-4 h-4 mr-1" /> Property Images (1-5 required)
                   </label>
                   <input
-                    type="number"
-                    step="1"
-                    placeholder="2"
-                    value={addForm.space_per_student}
-                    onChange={e => setAddForm({ ...addForm, space_per_student: e.target.value })}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={e => {
+                      const files = Array.from(e.target.files || []);
+                      if (addForm.images.length + files.length > 5) {
+                        showNotification('warning', 'Maximum 5 images allowed');
+                        return;
+                      }
+                      setAddForm({ ...addForm, images: [...addForm.images, ...files] });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
-                    required
-                    min="1"
                   />
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {addForm.images.map((f, i) => (
+                      <div key={i} className="relative">
+                        <img src={URL.createObjectURL(f)} alt="" className="w-20 h-20 object-cover rounded-lg" />
+                        <button
+                          type="button"
+                          onClick={() => setAddForm({ ...addForm, images: addForm.images.filter((_, idx) => idx !== i) })}
+                          className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <Upload className="inline w-4 h-4 mr-1" /> Property Images (1-5 required)
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={e => {
-                    const files = Array.from(e.target.files || []);
-                    if (addForm.images.length + files.length > 5) {
-                      showNotification('warning', 'Maximum 5 images allowed');
-                      return;
-                    }
-                    setAddForm({ ...addForm, images: [...addForm.images, ...files] });
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-transparent"
-                />
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {addForm.images.map((f, i) => (
-                    <div key={i} className="relative">
-                      <img src={URL.createObjectURL(f)} alt="" className="w-20 h-20 object-cover rounded-lg" />
-                      <button
-                        type="button"
-                        onClick={() => setAddForm({ ...addForm, images: addForm.images.filter((_, idx) => idx !== i) })}
-                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
+              </fieldset>
+              <div className="sticky bottom-0 border-t border-gray-200 bg-white px-6 py-4">
+                <div role="status">
+                  {savingProperty && (
+                    <p className="mb-3 text-sm font-medium text-blue-900">
+                      Uploading images and saving the property. Please wait.
+                    </p>
+                  )}
                 </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="submit"
-                  disabled={savingProperty || addForm.images.length === 0}
-                  className="flex-1 bg-blue-800 text-white py-2.5 rounded-lg font-medium hover:bg-blue-900 transition flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                  <Plus className="w-5 h-5" /> {savingProperty ? 'Adding...' : 'Add Property'}
-                </button>
-                <button
-                  type="button"
-                  disabled={savingProperty}
-                  onClick={() => setShowAddForm(false)}
-                  className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition"
-                >
-                  Cancel
-                </button>
+                {addPropertyError && <p role="alert" className="mb-3 text-sm text-red-700">{addPropertyError}</p>}
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={savingProperty || addForm.images.length === 0}
+                    className="flex-1 bg-blue-800 text-white py-2.5 rounded-lg font-medium hover:bg-blue-900 transition flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  >
+                    {savingProperty ? (
+                      <><Loader aria-hidden="true" className="w-5 h-5 animate-spin motion-reduce:animate-none" /> Adding property...</>
+                    ) : (
+                      <><Plus aria-hidden="true" className="w-5 h-5" /> Add Property</>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={savingProperty}
+                    onClick={() => setShowAddForm(false)}
+                    className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </form>
           </div>

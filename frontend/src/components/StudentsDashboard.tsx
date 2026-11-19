@@ -80,6 +80,26 @@ const CAMPUSES = [
   'Garankuwa Campus',
 ];
 
+function FundingApprovalField({ checked, onChange, disabled }: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled: boolean;
+}) {
+  return (
+    <label className="flex items-center gap-3 rounded-lg bg-gray-50 p-4 text-sm font-medium text-gray-700">
+      <input
+        type="checkbox"
+        name="funding_approved"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        disabled={disabled}
+        className="h-5 w-5 rounded text-blue-800 focus:ring-blue-700"
+      />
+      I have been approved for funding
+    </label>
+  );
+}
+
 export default function StudentsDashboard() {
   // ✅ ALL HOOKS FIRST - Before any returns!
   const [authReady, setAuthReady] = useState(false);
@@ -101,6 +121,7 @@ export default function StudentsDashboard() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [applicationNotes, setApplicationNotes] = useState('');
+  const [applicationFundingApproved, setApplicationFundingApproved] = useState(false);
   const [editingApplication, setEditingApplication] = useState<Application | null>(null);
   const [editingProfile, setEditingProfile] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -280,7 +301,11 @@ export default function StudentsDashboard() {
     try {
       const res = await fetchWithAuth(`${API}/applications/my-applications`, {
         method: 'POST',
-        body: JSON.stringify({ property_id: selectedProperty.id, notes: applicationNotes }),
+        body: JSON.stringify({
+          property_id: selectedProperty.id,
+          notes: applicationNotes,
+          funding_approved: applicationFundingApproved,
+        }),
       });
       if (res.ok) {
         showNotification('success', 'Application submitted successfully!');
@@ -415,6 +440,8 @@ export default function StudentsDashboard() {
   };
 
   const openPropertyDetails = (property: Property) => {
+    setApplicationNotes('');
+    setApplicationFundingApproved(false);
     setSelectedProperty(property);
     setCurrentImageIndex(0);
     setShowApplyModal(false);
@@ -1456,6 +1483,13 @@ export default function StudentsDashboard() {
                         rows={4}
                       />
                     </div>
+                    <div className="mb-4">
+                      <FundingApprovalField
+                        checked={applicationFundingApproved}
+                        onChange={setApplicationFundingApproved}
+                        disabled={submitting}
+                      />
+                    </div>
                     <div className="flex gap-3">
                       <button
                         type="submit"
@@ -1595,20 +1629,11 @@ export default function StudentsDashboard() {
                 )}
               </div>
 
-              <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-4">
-                <input
-                  type="checkbox"
-                  id="funding_approved"
-                  checked={editAppForm.fundingApproved}
-                  onChange={(e) =>
-                    setEditAppForm({ ...editAppForm, fundingApproved: e.target.checked })
-                  }
-                  className="w-5 h-5 text-blue-800 rounded focus:ring-blue-700"
-                />
-                <label htmlFor="funding_approved" className="text-sm font-medium text-gray-700">
-                  I have been approved for funding
-                </label>
-              </div>
+              <FundingApprovalField
+                checked={editAppForm.fundingApproved}
+                onChange={(fundingApproved) => setEditAppForm((form) => ({ ...form, fundingApproved }))}
+                disabled={submitting}
+              />
 
               <div className="flex gap-3 pt-4">
                 <button

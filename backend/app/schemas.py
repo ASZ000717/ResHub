@@ -104,6 +104,8 @@ class PropertyDetailOut(PropertyOut):
 # ==================== APPLICATION ====================
 class ApplicationCreate(BaseModel):
     property_id: int
+    notes: str = ""
+    funding_approved: bool = False
 
 
 class ApplicationOut(BaseModel):

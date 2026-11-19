@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 from typing import Optional
 from .. import models, database
+from ..schemas import ApplicationCreate
 from .auth import get_current_user
 from ..core.email_utils import send_application_confirmation_email
 from pydantic import BaseModel, Field
@@ -39,11 +40,6 @@ s3_client = boto3.client(
 def get_public_url(key: str) -> str:
     """Generate public URL for R2 object"""
     return f"{R2_PUBLIC_URL}/{key}"
-
-
-class ApplicationCreate(BaseModel):
-    property_id: int
-    notes: str = ""
 
 
 class ResidenceRatingInput(BaseModel):
@@ -154,7 +150,7 @@ def create_application(
         property_id=payload.property_id,
         status="pending",
         notes=payload.notes,
-        funding_approved=False
+        funding_approved=payload.funding_approved
     )
     db.add(new_app)
     db.commit()
@@ -183,7 +179,7 @@ async def update_application(
     app_id: int,
     proof_of_registration: Optional[UploadFile] = File(None),
     id_copy: Optional[UploadFile] = File(None),
-    funding_approved: bool = Form(False),
+    funding_approved: bool | None = Form(None),
     db: Session = Depends(database.get_db),
     current_user=Depends(get_current_user)
 ):
@@ -251,7 +247,8 @@ async def update_application(
         documents_uploaded = True
     
     # Update funding status on Application table
-    app.funding_approved = funding_approved
+    if funding_approved is not None:
+        app.funding_approved = funding_approved
     
     db.commit()
     

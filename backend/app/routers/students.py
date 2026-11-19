@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from .. import models, database
+from ..schemas import ApplicationCreate
 from .auth import get_current_user
 from ..core.email_utils import send_application_confirmation_email, send_document_reminder_email
 import boto3
@@ -75,7 +76,7 @@ def get_my_applications(
 
 @router.post("/my-applications")
 def create_application(
-    data: dict,
+    data: ApplicationCreate,
     db: Session = Depends(database.get_db),
     student: models.Student = Depends(get_current_student)
 ):
@@ -87,8 +88,7 @@ def create_application(
             detail="You must verify your email before applying for accommodation. Please check your inbox for the verification link."
         )
     
-    property_id = data.get("property_id")
-    notes = data.get("notes", "")
+    property_id = data.property_id
     
     # Validate property exists
     prop = db.query(models.Property).filter(
@@ -113,8 +113,9 @@ def create_application(
     app = models.Application(
         student_id=student.id,
         property_id=property_id,
-        notes=notes,
-        status="pending"
+        notes=data.notes,
+        status="pending",
+        funding_approved=data.funding_approved,
     )
     db.add(app)
     db.commit()
@@ -144,7 +145,7 @@ async def update_application(
     app_id: int,
     proof_of_registration: UploadFile = File(None),
     id_copy: UploadFile = File(None),
-    funding_approved: bool = Form(False),
+    funding_approved: bool | None = Form(None),
     db: Session = Depends(database.get_db),
     student: models.Student = Depends(get_current_student),
 ):
@@ -212,7 +213,8 @@ async def update_application(
         documents_uploaded = True
 
     # Update funding status
-    app.funding_approved = funding_approved
+    if funding_approved is not None:
+        app.funding_approved = funding_approved
     
     db.commit()
     
